@@ -876,18 +876,36 @@ async function carregarTudo() {
     estoque       = e.docs.map(d=>({id:d.id,...d.data()}));
     contas        = co.docs.map(d=>({id:d.id,...d.data()}));
     protocolos    = pr.docs.map(d=>({id:d.id,...d.data()}));
-    financeiro.sort((a,b)=>b.data.localeCompare(a.data));
-    renderCli(); renderAg(agendamentos); renderSrv(); renderPrf();
-    renderVnd(vendas); atualizarResumoVnd();
-    renderFin(financeiro); atualizarResumoFin();
-    renderEst(estoque); atualizarResumoEst();
-    renderCon(contas); atualizarResumoCon();
-    renderPro(protocolos); atualizarResumoPro();
+    financeiro.sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+
+    // Renderiza apenas se o elemento existir na página
+    if(document.getElementById('tb-cli'))  renderCli();
+    if(document.getElementById('tb-ag'))   renderAg(agendamentos);
+    if(document.getElementById('tb-srv'))  renderSrv();
+    if(document.getElementById('tb-prf'))  renderPrf();
+    if(document.getElementById('tb-vnd'))  { renderVnd(vendas); atualizarResumoVnd(); }
+    if(document.getElementById('tb-fin'))  { renderFin(financeiro); atualizarResumoFin(); }
+    if(document.getElementById('tb-est'))  { renderEst(estoque); atualizarResumoEst(); }
+    if(document.getElementById('tb-con'))  { renderCon(contas); atualizarResumoCon(); }
+    if(document.getElementById('tb-pro'))  { renderPro(protocolos); atualizarResumoPro(); }
+
     await carregarTaxas();
-    atualizarMenu(); atualizarResumoAg();
+    atualizarMenu();
+    atualizarResumoAg();
+
     // Carrega meta salva
-    try{const m=await db.collection('config').doc('meta').get();if(m.exists) document.getElementById('dash-meta').value=m.data().valor||'';}catch(e){}
+    try {
+      const m = await db.collection('config').doc('meta').get();
+      if(m.exists && document.getElementById('dash-meta')) {
+        document.getElementById('dash-meta').value = m.data().valor||'';
+      }
+    } catch(e) {}
+
     carregarDash();
+
+  } catch(e) { toast('Erro ao carregar: '+e.message,'#c0392b'); }
+  load(false);
+}
   } catch(e) { toast('Erro ao carregar: '+e.message,'#c0392b'); }
   load(false);
 }
