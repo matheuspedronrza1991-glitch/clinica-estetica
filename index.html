@@ -985,12 +985,25 @@ function usarDemo() {
 
 // ── NAVEGAÇÃO ──
 function irPara(pagina) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('ativo'));
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('ativo');
+    p.style.display = 'none';
+  });
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('ativo'));
+  
   const el = document.getElementById('page-' + pagina);
-  if (el) el.classList.add('ativo');
+  if (el) {
+    el.classList.add('ativo');
+    el.style.display = 'block';
+  }
+  
   const nav = document.querySelector(`[data-page="${pagina}"]`);
   if (nav) nav.classList.add('ativo');
+
+  // Carrega dados ao entrar na página
+  if (pagina === 'agendamentos') carregarAgendamentos();
+  if (pagina === 'clientes') carregarClientes();
+  if (pagina === 'cadastros') { carregarServicos(); carregarProfissionais(); }
 }
 
 // ── CLIENTES ──
