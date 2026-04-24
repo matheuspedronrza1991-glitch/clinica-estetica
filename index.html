@@ -4,372 +4,108 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clínica de Estética</title>
-
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
 <style>
-/* ── RESET ── */
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
-:root{
-  --escuro:#1a1a1a;
-  --escuro2:#2c2c2c;
-  --roxo:#5a3296;
-  --roxo2:#46287a;
-  --verde:#27ae60;
-  --vermelho:#c0392b;
-  --laranja:#e67e22;
-  --azul:#2980b9;
-  --cinza:#7f8c8d;
-  --bg:#f0f0f0;
-  --card:#ffffff;
-  --borda:#ddd;
-  --texto:#333;
-  --amarelo-campo:#fffde7;
-  --verde-campo:#e8f5e9;
-  --azul-campo:#ddeeff;
-}
-
-body{background:var(--bg);color:var(--texto);min-height:100vh}
-
-/* ── HEADER ── */
-.header{
-  background:var(--escuro);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  padding:0 20px;
-  height:52px;
-  position:fixed;
-  top:0;left:0;right:0;
-  z-index:100;
-  box-shadow:0 2px 8px rgba(0,0,0,.4);
-}
-.header .logo{font-size:18px;font-weight:700;letter-spacing:1px}
-.header .logo span{color:#c9a0ff}
-.header .user{margin-left:auto;font-size:12px;color:#aaa}
-
-/* ── NAVBAR ── */
-.navbar{
-  background:var(--escuro2);
-  display:flex;
-  padding:0 20px;
-  position:fixed;
-  top:52px;left:0;right:0;
-  z-index:99;
-  height:38px;
-  align-items:stretch;
-  border-bottom:3px solid var(--roxo);
-}
-.nav-item{
-  padding:0 16px;
-  color:#aaa;
-  font-size:11px;
-  font-weight:600;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:5px;
-  border-bottom:3px solid transparent;
-  margin-bottom:-3px;
-  transition:all .15s;
-  text-transform:uppercase;
-  letter-spacing:.5px;
-}
-.nav-item:hover{color:#fff;background:rgba(255,255,255,.05)}
-.nav-item.ativo{color:#fff;border-bottom-color:var(--roxo);background:rgba(255,255,255,.08)}
-
-/* ── CONTEÚDO ── */
-.content{
-  margin-top:90px;
-  padding:20px;
-  max-width:1200px;
-  margin-left:auto;
-  margin-right:auto;
-  padding-top:110px;
-}
-
-/* ── PÁGINA ── */
-.page{display:none}
-.page.ativo{display:block}
-
-/* ── PAGE HEADER ── */
-.page-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:16px;
-}
-.page-title{
-  font-size:20px;
-  font-weight:700;
-  color:var(--escuro2);
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.page-title .badge{
-  font-size:11px;
-  background:var(--roxo);
-  color:#fff;
-  padding:2px 10px;
-  border-radius:20px;
-  font-weight:500;
-}
-
-/* ── CARD ── */
-.card{
-  background:var(--card);
-  border-radius:8px;
-  box-shadow:0 1px 4px rgba(0,0,0,.1);
-  margin-bottom:16px;
-  overflow:hidden;
-}
-.card-header{
-  background:var(--roxo);
-  color:#fff;
-  padding:10px 16px;
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:.5px;
-  text-transform:uppercase;
-}
-.card-body{padding:16px}
-
-/* ── FORM GRID ── */
-.form-grid{
-  display:grid;
-  gap:12px;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-}
-.form-group{display:flex;flex-direction:column;gap:4px}
-.form-group label{font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px}
-.form-group input,
-.form-group select,
-.form-group textarea{
-  padding:7px 10px;
-  border:1.5px solid var(--borda);
-  border-radius:5px;
-  font-size:13px;
-  background:var(--amarelo-campo);
-  color:var(--texto);
-  transition:border .15s;
-  width:100%;
-}
-.form-group input:focus,
-.form-group select:focus{outline:none;border-color:var(--roxo)}
-.form-group input.auto{background:var(--verde-campo);border-color:#a5d6a7}
-.form-group input.cep-field{background:var(--azul-campo);border-color:#90caf9}
-.form-group input:disabled{background:#e9e9e9;color:#999;cursor:not-allowed}
-.span2{grid-column:span 2}
-.span3{grid-column:span 3}
-.span4{grid-column:span 4}
-
-/* ── BOTÕES ── */
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-.btn{
-  padding:8px 16px;
-  border:none;
-  border-radius:5px;
-  font-size:12px;
-  font-weight:700;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:5px;
-  transition:opacity .15s,transform .1s;
-}
-.btn:hover{opacity:.88;transform:translateY(-1px)}
-.btn:active{transform:translateY(0)}
-.btn-verde{background:var(--verde);color:#fff}
-.btn-vermelho{background:var(--vermelho);color:#fff}
-.btn-laranja{background:var(--laranja);color:#fff}
-.btn-azul{background:var(--azul);color:#fff}
-.btn-cinza{background:var(--cinza);color:#fff}
-.btn-roxo{background:var(--roxo);color:#fff}
-.btn-escuro{background:var(--escuro2);color:#fff}
-.btn-sm{padding:5px 11px;font-size:11px}
-
-/* ── BUSCA ── */
-.busca-bar{
-  display:flex;
-  gap:8px;
-  align-items:center;
-  margin-bottom:12px;
-}
-.busca-bar input{
-  flex:1;
-  padding:8px 12px;
-  border:1.5px solid var(--borda);
-  border-radius:5px;
-  font-size:13px;
-  background:#fff;
-}
-.busca-bar input:focus{outline:none;border-color:var(--roxo)}
-
-/* ── TABELA ── */
-.tabela-wrap{overflow-x:auto;border-radius:6px;border:1px solid var(--borda)}
+body{background:#f0f0f0;color:#333}
+/* HEADER */
+.header{background:#1a1a1a;color:#fff;height:50px;display:flex;align-items:center;padding:0 20px;position:fixed;top:0;left:0;right:0;z-index:1000}
+.logo{font-size:17px;font-weight:700}.logo span{color:#c9a0ff}
+.status{margin-left:auto;font-size:11px;color:#aaa}
+/* NAV */
+.nav{background:#2c2c2c;height:36px;display:flex;align-items:stretch;padding:0 10px;position:fixed;top:50px;left:0;right:0;z-index:999;border-bottom:3px solid #5a3296;overflow-x:auto}
+.nav-btn{padding:0 14px;color:#aaa;font-size:11px;font-weight:600;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-3px;white-space:nowrap;text-transform:uppercase;letter-spacing:.4px}
+.nav-btn:hover{color:#fff}
+.nav-btn.on{color:#fff;border-bottom-color:#5a3296}
+/* CONTENT */
+.content{margin-top:86px;padding:20px}
+/* PAGES */
+.page{display:none}.page.on{display:block}
+/* CARDS */
+.card{background:#fff;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.1);margin-bottom:16px;overflow:hidden}
+.card-h{padding:10px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#fff}
+.card-b{padding:16px}
+/* FORM */
+.fg{display:grid;gap:10px}
+.fg2{grid-template-columns:1fr 1fr}
+.fg3{grid-template-columns:1fr 1fr 1fr}
+.fg4{grid-template-columns:1fr 1fr 1fr 1fr}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+.fld{display:flex;flex-direction:column;gap:3px}
+.fld label{font-size:9px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px}
+.fld input,.fld select,.fld textarea{padding:7px 10px;border:1.5px solid #ddd;border-radius:5px;font-size:13px;background:#fffde7;width:100%}
+.fld input:focus,.fld select:focus{outline:none;border-color:#5a3296}
+.fld input.verde{background:#e8f5e9;border-color:#a5d6a7}
+.fld input.azul{background:#e3f0fb;border-color:#90caf9}
+.fld input.dis{background:#eee;color:#999}
+/* BOTÕES */
+.brow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn{padding:8px 16px;border:none;border-radius:5px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.bg{background:#27ae60;color:#fff}.br{background:#c0392b;color:#fff}
+.bo{background:#e67e22;color:#fff}.bb{background:#2980b9;color:#fff}
+.bc{background:#7f8c8d;color:#fff}.bv{background:#5a3296;color:#fff}
+.bsm{padding:5px 10px;font-size:11px}
+/* TABELA */
+.twrap{overflow-x:auto;border-radius:6px;border:1px solid #ddd}
 table{width:100%;border-collapse:collapse;font-size:12px}
-thead tr{background:var(--escuro2);color:#fff}
-thead th{padding:10px 12px;text-align:left;font-weight:600;font-size:11px;letter-spacing:.4px;white-space:nowrap}
-tbody tr{border-bottom:1px solid #f0f0f0;transition:background .1s;cursor:pointer}
+thead tr{background:#2c2c2c;color:#fff}
+th{padding:9px 12px;text-align:left;font-size:11px;font-weight:600;white-space:nowrap}
+tbody tr{border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background .1s}
 tbody tr:hover{background:#f0ebff}
-tbody tr.selecionado{background:#e8d5ff}
 tbody tr:nth-child(even){background:#fafafa}
 tbody tr:nth-child(even):hover{background:#f0ebff}
-tbody td{padding:9px 12px;color:var(--texto)}
-.td-acoes{display:flex;gap:4px}
-
-/* ── BADGE STATUS ── */
-.badge-ok{background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
-.badge-warn{background:#fff3cd;color:#7d5a00;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
-.badge-err{background:#fdecea;color:#7f0000;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
-
-/* ── TOAST ── */
-.toast{
-  position:fixed;
-  bottom:24px;right:24px;
-  background:var(--escuro2);color:#fff;
-  padding:12px 20px;
-  border-radius:6px;
-  font-size:13px;
-  box-shadow:0 4px 12px rgba(0,0,0,.3);
-  opacity:0;
-  transform:translateY(10px);
-  transition:all .3s;
-  z-index:999;
-  max-width:320px;
-}
-.toast.show{opacity:1;transform:translateY(0)}
-.toast.verde{border-left:4px solid var(--verde)}
-.toast.vermelho{border-left:4px solid var(--vermelho)}
-.toast.azul{border-left:4px solid var(--azul)}
-
-/* ── MODAL ── */
-.modal-overlay{
-  display:none;
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.5);
-  z-index:200;
-  align-items:center;
-  justify-content:center;
-}
-.modal-overlay.aberto{display:flex}
-.modal{
-  background:#fff;
-  border-radius:10px;
-  width:90%;
-  max-width:680px;
-  max-height:90vh;
-  overflow-y:auto;
-  box-shadow:0 8px 32px rgba(0,0,0,.35);
-  animation:slideIn .2s ease;
-}
-@keyframes slideIn{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal-header{
-  background:var(--roxo);
-  color:#fff;
-  padding:14px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  border-radius:10px 10px 0 0;
-}
-.modal-header h3{font-size:15px;font-weight:700}
-.modal-close{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;opacity:.8}
-.modal-close:hover{opacity:1}
-.modal-body{padding:20px}
-.modal-footer{
-  padding:12px 20px;
-  border-top:1px solid var(--borda);
-  display:flex;gap:8px;justify-content:flex-end;
-  background:#fafafa;
-  border-radius:0 0 10px 10px;
-}
-
-/* ── SECÇÃO DENTRO DO MODAL ── */
-.sec-titulo{
-  font-size:10px;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:.5px;
-  color:#fff;
-  background:var(--roxo2);
-  padding:5px 10px;
-  border-radius:4px;
-  margin:14px 0 8px;
-}
-
-/* ── LOADING ── */
-.loading{
-  display:none;
-  position:fixed;inset:0;
-  background:rgba(255,255,255,.7);
-  z-index:500;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  gap:12px;
-}
-.loading.show{display:flex}
-.spinner{
-  width:40px;height:40px;
-  border:4px solid #ddd;
-  border-top-color:var(--roxo);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ── MENU PRINCIPAL ── */
-.menu-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:16px;
-  margin-top:20px;
-}
-.menu-card{
-  background:#fff;
-  border-radius:10px;
-  padding:24px 20px;
-  text-align:center;
-  cursor:pointer;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-  transition:transform .15s,box-shadow .15s;
-  border-top:4px solid var(--roxo);
-}
-.menu-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.15)}
-.menu-card .icon{font-size:32px;margin-bottom:10px}
-.menu-card .titulo{font-size:13px;font-weight:700;color:var(--escuro2)}
-.menu-card .sub{font-size:11px;color:#999;margin-top:4px}
-
-/* ── CONFIG FIREBASE ── */
-.config-firebase{
-  background:#fff8e1;
-  border:2px dashed #f9a825;
-  border-radius:8px;
-  padding:20px;
-  margin-bottom:20px;
-  text-align:center;
-}
-.config-firebase h3{color:#e65100;margin-bottom:8px}
-.config-firebase p{font-size:12px;color:#555;margin-bottom:12px}
-.config-firebase input{
-  width:100%;padding:8px 12px;
-  border:1px solid #ddd;border-radius:5px;
-  font-size:12px;margin-bottom:6px;
-  font-family:monospace;
-}
+td{padding:8px 12px;color:#333}
+.acts{display:flex;gap:4px}
+/* BADGES */
+.bok{background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;display:inline-block}
+.bwn{background:#fff3cd;color:#7d5a00;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;display:inline-block}
+.ber{background:#fdecea;color:#7f0000;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;display:inline-block}
+/* BUSCA */
+.busca{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.busca input{flex:1;padding:8px 12px;border:1.5px solid #ddd;border-radius:5px;font-size:13px}
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;align-items:center;justify-content:center}
+.ov.on{display:flex}
+.modal{background:#fff;border-radius:10px;width:90%;max-width:660px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.35);animation:si .2s ease}
+@keyframes si{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mh{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-radius:10px 10px 0 0}
+.mh h3{font-size:15px;font-weight:700;color:#fff}
+.mx{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1}
+.mb{padding:20px}
+.mf{padding:12px 20px;border-top:1px solid #ddd;display:flex;gap:8px;justify-content:flex-end;background:#fafafa;border-radius:0 0 10px 10px}
+.sec{background:#5a3296;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:4px 10px;border-radius:4px;margin:12px 0 6px}
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:6px;font-size:13px;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.3);opacity:0;transform:translateY(10px);transition:all .3s;z-index:9999;max-width:300px}
+.toast.on{opacity:1;transform:translateY(0)}
+/* LOADING */
+.loading{display:none;position:fixed;inset:0;background:rgba(255,255,255,.7);z-index:5000;align-items:center;justify-content:center}
+.loading.on{display:flex}
+.spin{width:40px;height:40px;border:4px solid #ddd;border-top-color:#5a3296;border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* MENU CARDS */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:16px}
+.mcard{background:#fff;border-radius:8px;padding:20px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s;border-top:4px solid #5a3296}
+.mcard:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.15)}
+.mcard .ico{font-size:30px;margin-bottom:8px}
+.mcard .tit{font-size:13px;font-weight:700;color:#2c2c2c}
+.mcard .sub{font-size:11px;color:#999;margin-top:3px}
+/* RESUMO */
+.resumo{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.rcard{background:#fff;border-radius:8px;padding:14px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.rval{font-size:22px;font-weight:700}
+.rlbl{font-size:11px;color:#888;margin-top:3px}
+/* PAGE HEADER */
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.pt{font-size:19px;font-weight:700;display:flex;align-items:center;gap:8px}
+.pbadge{background:#5a3296;color:#fff;padding:2px 10px;border-radius:20px;font-size:11px}
 </style>
 </head>
 <body>
 
 <!-- LOADING -->
-<div class="loading" id="loading">
-  <div class="spinner"></div>
-  <span style="font-size:13px;color:#555">Carregando...</span>
-</div>
+<div class="loading" id="loading"><div class="spin"></div></div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
@@ -377,1134 +113,764 @@ tbody td{padding:9px 12px;color:var(--texto)}
 <!-- HEADER -->
 <div class="header">
   <div class="logo">CLÍNICA <span>ESTÉTICA</span></div>
-  <div class="user" id="statusConexao">⚡ Conectando...</div>
+  <div class="status" id="statusFb">⚡ Conectando...</div>
 </div>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="nav-item ativo" onclick="irPara('menu')" data-page="menu">🏠 Menu</div>
-  <div class="nav-item" onclick="irPara('clientes')" data-page="clientes">👤 Clientes</div>
-  <div class="nav-item" onclick="irPara('agendamentos')" data-page="agendamentos">📅 Agendamentos</div>
-  <div class="nav-item" onclick="irPara('vendas')" data-page="vendas">💰 Vendas</div>
-  <div class="nav-item" onclick="irPara('financeiro')" data-page="financeiro">📊 Financeiro</div>
-  <div class="nav-item" onclick="irPara('contas')" data-page="contas">💳 Contas</div>
-  <div class="nav-item" onclick="irPara('estoque')" data-page="estoque">📦 Estoque</div>
-  <div class="nav-item" onclick="irPara('protocolos')" data-page="protocolos">📋 Protocolos</div>
-  <div class="nav-item" onclick="irPara('dashboard')" data-page="dashboard">📈 Dashboard</div>
-  <div class="nav-item" onclick="irPara('cadastros')" data-page="cadastros">⚙️ Cadastros</div>
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn on" onclick="ir('menu')" data-p="menu">🏠 Menu</button>
+  <button class="nav-btn" onclick="ir('clientes')" data-p="clientes">👤 Clientes</button>
+  <button class="nav-btn" onclick="ir('agendamentos')" data-p="agendamentos">📅 Agendamentos</button>
+  <button class="nav-btn" onclick="ir('vendas')" data-p="vendas">💰 Vendas</button>
+  <button class="nav-btn" onclick="ir('financeiro')" data-p="financeiro">📊 Financeiro</button>
+  <button class="nav-btn" onclick="ir('contas')" data-p="contas">💳 Contas</button>
+  <button class="nav-btn" onclick="ir('estoque')" data-p="estoque">📦 Estoque</button>
+  <button class="nav-btn" onclick="ir('protocolos')" data-p="protocolos">📋 Protocolos</button>
+  <button class="nav-btn" onclick="ir('dashboard')" data-p="dashboard">📈 Dashboard</button>
+  <button class="nav-btn" onclick="ir('cadastros')" data-p="cadastros">⚙️ Cadastros</button>
 </nav>
 
-<!-- CONTEÚDO -->
 <div class="content">
 
-<!-- ══════════════════════════════════ -->
-<!-- PÁGINA: CONFIGURAÇÃO FIREBASE     -->
-<!-- ══════════════════════════════════ -->
-<div id="page-config-firebase" class="page ativo">
-  <div class="config-firebase">
-    <h3>⚙️ Configurar Firebase</h3>
-    <p>Cole abaixo as credenciais do seu projeto Firebase para conectar o sistema.<br>
-    Veja o passo a passo no final desta página.</p>
-
-    <input id="fb-apiKey"            placeholder="apiKey">
-    <input id="fb-authDomain"        placeholder="authDomain">
-    <input id="fb-projectId"         placeholder="projectId">
-    <input id="fb-storageBucket"     placeholder="storageBucket">
-    <input id="fb-messagingSenderId" placeholder="messagingSenderId">
-    <input id="fb-appId"             placeholder="appId">
-
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
-      <button class="btn btn-roxo" onclick="salvarConfig()">✅ Conectar ao Firebase</button>
-      <button class="btn btn-cinza" onclick="usarDemo()">🧪 Usar modo demonstração</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header">📋 Como criar seu Firebase gratuito (5 minutos)</div>
-    <div class="card-body" style="font-size:13px;line-height:1.8;color:#444">
-      <b>1.</b> Acesse <a href="https://console.firebase.google.com" target="_blank" style="color:var(--roxo)">console.firebase.google.com</a><br>
-      <b>2.</b> Clique em <b>"Criar um projeto"</b> → dê um nome (ex: clinica-estetica)<br>
-      <b>3.</b> Desative o Google Analytics (opcional) → clique em <b>Criar projeto</b><br>
-      <b>4.</b> No menu lateral clique em <b>Firestore Database</b> → <b>Criar banco de dados</b><br>
-      <b>5.</b> Escolha <b>Modo de teste</b> → selecione a região <b>southamerica-east1</b><br>
-      <b>6.</b> Volte à tela inicial do projeto → clique em <b>&lt;/&gt; Web</b> → registre o app<br>
-      <b>7.</b> Copie as credenciais que aparecem (apiKey, authDomain, etc.) e cole acima<br>
-      <b>8.</b> Clique em <b>Conectar ao Firebase</b> — pronto! 🎉
-    </div>
+<!-- ═══════════ MENU ═══════════ -->
+<div id="pg-menu" class="page on">
+  <div class="pt">🌸 Bem-vinda ao Sistema <span class="pbadge">Clínica de Estética</span></div>
+  <div class="mgrid">
+    <div class="mcard" onclick="ir('clientes')" style="border-top-color:#5a3296"><div class="ico">👤</div><div class="tit">Clientes</div><div class="sub" id="sub-cli">...</div></div>
+    <div class="mcard" onclick="ir('agendamentos')" style="border-top-color:#c0392b"><div class="ico">📅</div><div class="tit">Agendamentos</div><div class="sub" id="sub-ag">...</div></div>
+    <div class="mcard" onclick="ir('vendas')" style="border-top-color:#27ae60"><div class="ico">💰</div><div class="tit">Vendas</div><div class="sub">Em breve</div></div>
+    <div class="mcard" onclick="ir('financeiro')" style="border-top-color:#2980b9"><div class="ico">📊</div><div class="tit">Financeiro</div><div class="sub">Em breve</div></div>
+    <div class="mcard" onclick="ir('contas')" style="border-top-color:#e67e22"><div class="ico">💳</div><div class="tit">Contas a Receber</div><div class="sub">Em breve</div></div>
+    <div class="mcard" onclick="ir('estoque')" style="border-top-color:#16a085"><div class="ico">📦</div><div class="tit">Estoque</div><div class="sub">Em breve</div></div>
+    <div class="mcard" onclick="ir('protocolos')" style="border-top-color:#6c3483"><div class="ico">📋</div><div class="tit">Protocolos</div><div class="sub">Em breve</div></div>
+    <div class="mcard" onclick="ir('dashboard')" style="border-top-color:#1a1a1a"><div class="ico">📈</div><div class="tit">Dashboard</div><div class="sub">Em breve</div></div>
+    <div class="mcard" onclick="ir('cadastros')" style="border-top-color:#7f8c8d"><div class="ico">⚙️</div><div class="tit">Cadastros</div><div class="sub">Serviços e profissionais</div></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════ -->
-<!-- PÁGINA: MENU                      -->
-<!-- ══════════════════════════════════ -->
-<div id="page-menu" class="page">
-  <div class="page-header">
-    <div class="page-title">🌸 Bem-vinda ao Sistema <span class="badge" id="badgeClinica">Clínica de Estética</span></div>
+<!-- ═══════════ CLIENTES ═══════════ -->
+<div id="pg-clientes" class="page">
+  <div class="ph">
+    <div class="pt">👤 Clientes <span class="pbadge" id="tot-cli">0</span></div>
+    <button class="btn bv" onclick="abrirCli()">➕ Novo Cliente</button>
   </div>
-  <div class="menu-grid">
-    <div class="menu-card" onclick="irPara('clientes')" style="border-top-color:#5a3296">
-      <div class="icon">👤</div>
-      <div class="titulo">Clientes</div>
-      <div class="sub" id="sub-clientes">Carregando...</div>
-    </div>
-    <div class="menu-card" onclick="irPara('agendamentos')" style="border-top-color:#c0392b">
-      <div class="icon">📅</div>
-      <div class="titulo">Agendamentos</div>
-      <div class="sub">Em breve</div>
-    </div>
-    <div class="menu-card" onclick="irPara('vendas')" style="border-top-color:#27ae60">
-      <div class="icon">💰</div>
-      <div class="titulo">Vendas</div>
-      <div class="sub">Em breve</div>
-    </div>
-    <div class="menu-card" onclick="irPara('financeiro')" style="border-top-color:#2980b9">
-      <div class="icon">📊</div>
-      <div class="titulo">Financeiro</div>
-      <div class="sub">Em breve</div>
-    </div>
-    <div class="menu-card" onclick="irPara('contas')" style="border-top-color:#e67e22">
-      <div class="icon">💳</div>
-      <div class="titulo">Contas a Receber</div>
-      <div class="sub">Em breve</div>
-    </div>
-    <div class="menu-card" onclick="irPara('estoque')" style="border-top-color:#16a085">
-      <div class="icon">📦</div>
-      <div class="titulo">Estoque</div>
-      <div class="sub">Em breve</div>
-    </div>
-    <div class="menu-card" onclick="irPara('protocolos')" style="border-top-color:#6c3483">
-      <div class="icon">📋</div>
-      <div class="titulo">Protocolos</div>
-      <div class="sub">Em breve</div>
-    </div>
-    <div class="menu-card" onclick="irPara('dashboard')" style="border-top-color:#1a1a1a">
-      <div class="icon">📈</div>
-      <div class="titulo">Dashboard</div>
-      <div class="sub">Em breve</div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════ -->
-<!-- PÁGINA: CLIENTES                  -->
-<!-- ══════════════════════════════════ -->
-<div id="page-clientes" class="page">
-  <div class="page-header">
-    <div class="page-title">👤 Clientes <span class="badge" id="totalClientes">0</span></div>
-    <button class="btn btn-roxo" onclick="abrirModalCliente()">➕ Novo Cliente</button>
-  </div>
-
   <div class="card">
-    <div class="card-body" style="padding-bottom:8px">
-      <div class="busca-bar">
-        <input type="text" id="buscaCliente" placeholder="🔍 Buscar por nome, CPF ou telefone..." oninput="filtrarClientes()">
-        <button class="btn btn-cinza btn-sm" onclick="document.getElementById('buscaCliente').value='';filtrarClientes()">Limpar</button>
+    <div class="card-b" style="padding-bottom:8px">
+      <div class="busca">
+        <input type="text" id="busca-cli" placeholder="🔍 Buscar por nome, CPF ou telefone..." oninput="filtrarCli()">
+        <button class="btn bc bsm" onclick="document.getElementById('busca-cli').value='';filtrarCli()">Limpar</button>
       </div>
     </div>
-    <div class="tabela-wrap">
+    <div class="twrap">
       <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nome Completo</th>
-            <th>CPF</th>
-            <th>Telefone</th>
-            <th>E-mail</th>
-            <th>Cidade/UF</th>
-            <th>Profissão</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaClientes">
-          <tr><td colspan="8" style="text-align:center;padding:20px;color:#999">Nenhum cliente cadastrado.</td></tr>
-        </tbody>
+        <thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>E-mail</th><th>Cidade/UF</th><th>Profissão</th><th>Ações</th></tr></thead>
+        <tbody id="tb-cli"><tr><td colspan="8" style="text-align:center;padding:20px;color:#999">Nenhum cliente cadastrado.</td></tr></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<!-- Páginas em breve -->
-<!-- ══════════════════════════════════ -->
-<!-- PÁGINA: AGENDAMENTOS              -->
-<!-- ══════════════════════════════════ -->
-<div id="page-cadastros" class="page">
-  <div class="page-header">
-    <div class="page-title">⚙️ Cadastros Auxiliares</div>
+<!-- ═══════════ AGENDAMENTOS ═══════════ -->
+<div id="pg-agendamentos" class="page">
+  <div class="ph">
+    <div class="pt">📅 Agendamentos <span class="pbadge" id="tot-ag">0</span></div>
+    <button class="btn br" onclick="abrirAg()">➕ Novo Agendamento</button>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-
-    <!-- SERVIÇOS -->
-    <div>
-      <div class="card">
-        <div class="card-header" style="background:#5a3296">✂️ Serviços / Procedimentos</div>
-        <div class="card-body">
-          <div class="form-grid" style="grid-template-columns:1fr 1fr">
-            <div class="form-group" style="grid-column:span 2">
-              <label>Nome do Serviço *</label>
-              <input type="text" id="srv-nome" placeholder="Ex: Limpeza de pele, Protocolo Detox...">
-            </div>
-            <div class="form-group">
-              <label>Duração (minutos)</label>
-              <input type="number" id="srv-duracao" placeholder="60" min="0">
-            </div>
-            <div class="form-group">
-              <label>Valor padrão (R$)</label>
-              <input type="number" id="srv-valor" placeholder="0,00" step="0.01" min="0">
-            </div>
-            <div class="form-group" style="grid-column:span 2">
-              <label>Descrição</label>
-              <input type="text" id="srv-desc" placeholder="Descrição do serviço...">
-            </div>
-          </div>
-          <div class="btn-row" style="margin-top:8px">
-            <button class="btn btn-roxo" onclick="salvarServico()">💾 Salvar Serviço</button>
-            <button class="btn btn-cinza" onclick="limparServico()">🔄 Limpar</button>
-          </div>
-          <input type="hidden" id="srv-id">
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" style="background:#2c2c2c">Lista de Serviços <span id="totalServicos" style="background:#5a3296;padding:1px 8px;border-radius:10px;font-size:11px">0</span></div>
-        <div class="tabela-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Serviço</th>
-                <th>Duração</th>
-                <th>Valor</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="tabelaServicos">
-              <tr><td colspan="4" style="text-align:center;padding:16px;color:#999">Nenhum serviço cadastrado.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- PROFISSIONAIS -->
-    <div>
-      <div class="card">
-        <div class="card-header" style="background:#c0392b">👩‍⚕️ Profissionais</div>
-        <div class="card-body">
-          <div class="form-grid" style="grid-template-columns:1fr 1fr">
-            <div class="form-group" style="grid-column:span 2">
-              <label>Nome Completo *</label>
-              <input type="text" id="prof-nome" placeholder="Ex: Dra. Jenifer Silva">
-            </div>
-            <div class="form-group">
-              <label>Especialidade</label>
-              <input type="text" id="prof-espec" placeholder="Ex: Esteticista, Nutricionista...">
-            </div>
-            <div class="form-group">
-              <label>Telefone</label>
-              <input type="text" id="prof-tel" placeholder="(00) 00000-0000" oninput="mascaraTel(this)">
-            </div>
-            <div class="form-group">
-              <label>E-mail</label>
-              <input type="email" id="prof-email" placeholder="profissional@email.com">
-            </div>
-            <div class="form-group">
-              <label>Status</label>
-              <select id="prof-status" style="background:#fffde7">
-                <option value="Ativo">Ativo</option>
-                <option value="Inativo">Inativo</option>
-              </select>
-            </div>
-          </div>
-          <div class="btn-row" style="margin-top:8px">
-            <button class="btn btn-vermelho" onclick="salvarProfissional()">💾 Salvar Profissional</button>
-            <button class="btn btn-cinza" onclick="limparProfissional()">🔄 Limpar</button>
-          </div>
-          <input type="hidden" id="prof-id">
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" style="background:#2c2c2c">Lista de Profissionais <span id="totalProfissionais" style="background:#c0392b;padding:1px 8px;border-radius:10px;font-size:11px">0</span></div>
-        <div class="tabela-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Especialidade</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="tabelaProfissionais">
-              <tr><td colspan="4" style="text-align:center;padding:16px;color:#999">Nenhum profissional cadastrado.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-  <div class="page-header">
-    <div class="page-title">📅 Agendamentos <span class="badge" id="totalAgendamentos">0</span></div>
-    <button class="btn btn-vermelho" onclick="abrirModalAgendamento()">➕ Novo Agendamento</button>
-  </div>
-
-  <!-- Filtros -->
   <div class="card">
-    <div class="card-header">🔍 Filtrar Agendamentos</div>
-    <div class="card-body">
-      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
-        <div class="form-group">
-          <label>Data início</label>
-          <input type="date" id="filtro-ag-ini" onchange="filtrarAgendamentos()">
-        </div>
-        <div class="form-group">
-          <label>Data fim</label>
-          <input type="date" id="filtro-ag-fim" onchange="filtrarAgendamentos()">
-        </div>
-        <div class="form-group">
-          <label>Status</label>
-          <select id="filtro-ag-status" onchange="filtrarAgendamentos()" style="background:#fffde7">
+    <div class="card-h" style="background:#5a3296">🔍 Filtrar Agendamentos</div>
+    <div class="card-b">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+        <div class="fld"><label>Data início</label><input type="date" id="fi-ini" onchange="filtrarAg()"></div>
+        <div class="fld"><label>Data fim</label><input type="date" id="fi-fim" onchange="filtrarAg()"></div>
+        <div class="fld"><label>Status</label>
+          <select id="fi-st" onchange="filtrarAg()" style="background:#fffde7">
             <option value="">Todos</option>
-            <option>Confirmado</option>
-            <option>Aguardando</option>
-            <option>Concluído</option>
-            <option>Cancelado</option>
+            <option>Confirmado</option><option>Aguardando</option><option>Concluído</option><option>Cancelado</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Profissional</label>
-          <input type="text" id="filtro-ag-prof" placeholder="Nome..." oninput="filtrarAgendamentos()" style="background:#fffde7">
-        </div>
-        <button class="btn btn-cinza btn-sm" onclick="limparFiltrosAgenda()">Limpar filtros</button>
-        <button class="btn btn-roxo btn-sm" onclick="irParaHoje()">📅 Hoje</button>
+        <div class="fld"><label>Profissional</label><input type="text" id="fi-pr" placeholder="Nome..." oninput="filtrarAg()"></div>
+        <button class="btn bc bsm" onclick="limparFiltAg()">Limpar</button>
+        <button class="btn bv bsm" onclick="hojeAg()">📅 Hoje</button>
       </div>
     </div>
   </div>
 
-  <!-- Resumo do dia -->
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px" id="resumoAgenda">
-    <div class="card" style="margin:0">
-      <div class="card-body" style="text-align:center;padding:12px">
-        <div style="font-size:22px;font-weight:700;color:#5a3296" id="ag-total-dia">0</div>
-        <div style="font-size:11px;color:#888">Agendamentos hoje</div>
-      </div>
-    </div>
-    <div class="card" style="margin:0">
-      <div class="card-body" style="text-align:center;padding:12px">
-        <div style="font-size:22px;font-weight:700;color:#27ae60" id="ag-confirmados">0</div>
-        <div style="font-size:11px;color:#888">Confirmados</div>
-      </div>
-    </div>
-    <div class="card" style="margin:0">
-      <div class="card-body" style="text-align:center;padding:12px">
-        <div style="font-size:22px;font-weight:700;color:#e67e22" id="ag-aguardando">0</div>
-        <div style="font-size:11px;color:#888">Aguardando</div>
-      </div>
-    </div>
-    <div class="card" style="margin:0">
-      <div class="card-body" style="text-align:center;padding:12px">
-        <div style="font-size:22px;font-weight:700;color:#2980b9" id="ag-faturamento">R$ 0,00</div>
-        <div style="font-size:11px;color:#888">Faturamento do dia</div>
-      </div>
-    </div>
+  <div class="resumo">
+    <div class="rcard"><div class="rval" style="color:#5a3296" id="ag-hj">0</div><div class="rlbl">Agendamentos hoje</div></div>
+    <div class="rcard"><div class="rval" style="color:#27ae60" id="ag-cf">0</div><div class="rlbl">Confirmados</div></div>
+    <div class="rcard"><div class="rval" style="color:#e67e22" id="ag-aw">0</div><div class="rlbl">Aguardando</div></div>
+    <div class="rcard"><div class="rval" style="color:#2980b9" id="ag-ft">R$ 0,00</div><div class="rlbl">Faturamento do dia</div></div>
   </div>
 
-  <!-- Tabela -->
   <div class="card">
-    <div class="card-body" style="padding-bottom:8px">
-      <div style="display:flex;gap:8px;margin-bottom:10px">
-        <button class="btn btn-roxo btn-sm" onclick="renderizarAgendamentos(agendamentos)">🔄 Mostrar todos</button>
-        <button class="btn btn-cinza btn-sm" onclick="alert('Total no Firebase: ' + agendamentos.length + '\n\nDados:\n' + agendamentos.map(a=>a.data+' '+a.hora+' — '+a.cliente).join('\n'))">🔍 Ver dados carregados</button>
-      </div>
-      <div class="busca-bar">
-        <input type="text" id="buscaAgendamento" placeholder="🔍 Buscar por cliente ou serviço..." oninput="filtrarAgendamentos()">
+    <div class="card-b" style="padding-bottom:8px">
+      <div class="busca">
+        <input type="text" id="busca-ag" placeholder="🔍 Buscar por cliente ou serviço..." oninput="filtrarAg()">
       </div>
     </div>
-    <div class="tabela-wrap">
+    <div class="twrap">
       <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Hora</th>
-            <th>Cliente</th>
-            <th>Serviço / Protocolo</th>
-            <th>Profissional</th>
-            <th>Valor</th>
-            <th>Pacote</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaAgendamentos">
-          <tr><td colspan="9" style="text-align:center;padding:20px;color:#999">Nenhum agendamento encontrado.</td></tr>
-        </tbody>
+        <thead><tr><th>Data</th><th>Hora</th><th>Cliente</th><th>Serviço</th><th>Profissional</th><th>Valor</th><th>Pacote</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tb-ag"><tr><td colspan="9" style="text-align:center;padding:20px;color:#999">Nenhum agendamento.</td></tr></tbody>
       </table>
     </div>
   </div>
 </div>
-<div id="page-vendas" class="page"><div class="card"><div class="card-body" style="text-align:center;padding:40px;color:#999">💰 Módulo Vendas em desenvolvimento...</div></div></div>
-<div id="page-financeiro" class="page"><div class="card"><div class="card-body" style="text-align:center;padding:40px;color:#999">📊 Módulo Financeiro em desenvolvimento...</div></div></div>
-<div id="page-contas" class="page"><div class="card"><div class="card-body" style="text-align:center;padding:40px;color:#999">💳 Módulo Contas a Receber em desenvolvimento...</div></div></div>
-<div id="page-estoque" class="page"><div class="card"><div class="card-body" style="text-align:center;padding:40px;color:#999">📦 Módulo Estoque em desenvolvimento...</div></div></div>
-<div id="page-protocolos" class="page"><div class="card"><div class="card-body" style="text-align:center;padding:40px;color:#999">📋 Módulo Protocolos em desenvolvimento...</div></div></div>
-<div id="page-dashboard" class="page"><div class="card"><div class="card-body" style="text-align:center;padding:40px;color:#999">📈 Dashboard em desenvolvimento...</div></div></div>
+
+<!-- ═══════════ CADASTROS ═══════════ -->
+<div id="pg-cadastros" class="page">
+  <div class="ph"><div class="pt">⚙️ Cadastros Auxiliares</div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <!-- Serviços -->
+    <div>
+      <div class="card">
+        <div class="card-h" style="background:#5a3296">✂️ Serviços / Procedimentos</div>
+        <div class="card-b">
+          <div class="fg fg2" style="margin-bottom:8px">
+            <div class="fld s2"><label>Nome do Serviço *</label><input type="text" id="srv-nm" placeholder="Ex: Limpeza de pele..."></div>
+            <div class="fld"><label>Duração (min)</label><input type="number" id="srv-dur" placeholder="60"></div>
+            <div class="fld"><label>Valor padrão R$</label><input type="number" id="srv-vl" placeholder="0,00" step="0.01"></div>
+            <div class="fld s2"><label>Descrição</label><input type="text" id="srv-ds" placeholder="Descrição..."></div>
+          </div>
+          <input type="hidden" id="srv-id">
+          <div class="brow">
+            <button class="btn bv" onclick="salvarSrv()">💾 Salvar</button>
+            <button class="btn bc" onclick="limparSrv()">🔄 Limpar</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h" style="background:#2c2c2c">Lista de Serviços <span id="tot-srv" style="background:#5a3296;padding:1px 8px;border-radius:10px;font-size:10px">0</span></div>
+        <div class="twrap"><table>
+          <thead><tr><th>Serviço</th><th>Duração</th><th>Valor</th><th>Ações</th></tr></thead>
+          <tbody id="tb-srv"><tr><td colspan="4" style="text-align:center;padding:14px;color:#999">Nenhum serviço.</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+    <!-- Profissionais -->
+    <div>
+      <div class="card">
+        <div class="card-h" style="background:#c0392b">👩‍⚕️ Profissionais</div>
+        <div class="card-b">
+          <div class="fg fg2" style="margin-bottom:8px">
+            <div class="fld s2"><label>Nome Completo *</label><input type="text" id="prf-nm" placeholder="Ex: Dra. Jenifer Silva"></div>
+            <div class="fld"><label>Especialidade</label><input type="text" id="prf-ep" placeholder="Ex: Esteticista"></div>
+            <div class="fld"><label>Telefone</label><input type="text" id="prf-tl" placeholder="(00) 00000-0000" oninput="mTel(this)"></div>
+            <div class="fld"><label>E-mail</label><input type="email" id="prf-em" placeholder="email@email.com"></div>
+            <div class="fld"><label>Status</label>
+              <select id="prf-st" style="background:#fffde7"><option>Ativo</option><option>Inativo</option></select>
+            </div>
+          </div>
+          <input type="hidden" id="prf-id">
+          <div class="brow">
+            <button class="btn br" onclick="salvarPrf()">💾 Salvar</button>
+            <button class="btn bc" onclick="limparPrf()">🔄 Limpar</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h" style="background:#2c2c2c">Lista de Profissionais <span id="tot-prf" style="background:#c0392b;padding:1px 8px;border-radius:10px;font-size:10px">0</span></div>
+        <div class="twrap"><table>
+          <thead><tr><th>Nome</th><th>Especialidade</th><th>Status</th><th>Ações</th></tr></thead>
+          <tbody id="tb-prf"><tr><td colspan="4" style="text-align:center;padding:14px;color:#999">Nenhum profissional.</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Em breve -->
+<div id="pg-vendas" class="page"><div class="card"><div class="card-b" style="text-align:center;padding:40px;color:#999">💰 Módulo Vendas em desenvolvimento...</div></div></div>
+<div id="pg-financeiro" class="page"><div class="card"><div class="card-b" style="text-align:center;padding:40px;color:#999">📊 Módulo Financeiro em desenvolvimento...</div></div></div>
+<div id="pg-contas" class="page"><div class="card"><div class="card-b" style="text-align:center;padding:40px;color:#999">💳 Módulo Contas em desenvolvimento...</div></div></div>
+<div id="pg-estoque" class="page"><div class="card"><div class="card-b" style="text-align:center;padding:40px;color:#999">📦 Módulo Estoque em desenvolvimento...</div></div></div>
+<div id="pg-protocolos" class="page"><div class="card"><div class="card-b" style="text-align:center;padding:40px;color:#999">📋 Módulo Protocolos em desenvolvimento...</div></div></div>
+<div id="pg-dashboard" class="page"><div class="card"><div class="card-b" style="text-align:center;padding:40px;color:#999">📈 Dashboard em desenvolvimento...</div></div></div>
 
 </div><!-- /content -->
 
-<!-- MODAL: AGENDAMENTO -->
-<div class="modal-overlay" id="modalAgendamento">
+<!-- ═══════════ MODAL CLIENTE ═══════════ -->
+<div class="ov" id="ov-cli">
   <div class="modal">
-    <div class="modal-header" style="background:#c0392b">
-      <h3 id="modalAgendaTitulo">➕ Novo Agendamento</h3>
-      <button class="modal-close" onclick="fecharModal('modalAgendamento')">✕</button>
+    <div class="mh" style="background:#5a3296">
+      <h3 id="tit-cli">➕ Novo Cliente</h3>
+      <button class="mx" onclick="fechar('ov-cli')">✕</button>
     </div>
-    <div class="modal-body">
-
-      <div class="sec-titulo" style="background:#922b21">DADOS DO AGENDAMENTO</div>
-      <div class="form-grid" style="grid-template-columns:repeat(3,1fr);margin-top:8px">
-        <div class="form-group">
-          <label>Data *</label>
-          <input type="date" id="ag-data">
-        </div>
-        <div class="form-group">
-          <label>Hora *</label>
-          <input type="time" id="ag-hora">
-        </div>
-        <div class="form-group">
-          <label>Status</label>
-          <select id="ag-status" style="background:#fffde7">
-            <option>Confirmado</option>
-            <option>Aguardando</option>
-            <option>Concluído</option>
-            <option>Cancelado</option>
-          </select>
-        </div>
-        <div class="form-group span3">
-          <label>Cliente *</label>
-          <select id="ag-cliente" style="background:#fffde7">
-            <option value="">— Selecione a cliente —</option>
-          </select>
-        </div>
-        <div class="form-group span2">
-          <label>Serviço / Protocolo *</label>
-          <select id="ag-servico" style="background:#fffde7">
-            <option value="">— Selecione o serviço —</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Profissional</label>
-          <select id="ag-prof" style="background:#fffde7">
-            <option value="">— Selecione —</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Valor (R$) <span style="color:#e67e22;font-size:10px">● editável</span></label>
-          <input type="number" id="ag-valor" placeholder="0,00" step="0.01" min="0" style="background:#fff8e8;border-color:#e67e22">
-        </div>
-        <div class="form-group">
-          <label>Vinculado a pacote?</label>
-          <select id="ag-pacote" style="background:#fffde7">
-            <option value="Não">Não</option>
-            <option value="Sim">Sim</option>
-          </select>
-        </div>
-        <div class="form-group span3">
-          <label>Observações</label>
-          <textarea id="ag-obs" rows="2" placeholder="Anotações do atendimento..." style="background:#fffde7;border:1.5px solid #ddd;border-radius:5px;padding:8px;font-size:13px;width:100%;resize:vertical"></textarea>
-        </div>
+    <div class="mb">
+      <div class="sec">DADOS PESSOAIS</div>
+      <div class="fg fg3">
+        <div class="fld s2"><label>Nome Completo *</label><input type="text" id="c-nm" placeholder="Nome completo"></div>
+        <div class="fld"><label>Data Nascimento</label><input type="date" id="c-nc"></div>
+        <div class="fld"><label>CPF *</label><input type="text" id="c-cpf" placeholder="000.000.000-00" maxlength="14" oninput="mCPF(this)"></div>
+        <div class="fld"><label>Telefone *</label><input type="text" id="c-tel" placeholder="(00) 00000-0000" maxlength="15" oninput="mTel(this)"></div>
+        <div class="fld"><label>Profissão</label><input type="text" id="c-prf" placeholder="Ex: Professora"></div>
+        <div class="fld s3"><label>E-mail</label><input type="email" id="c-eml" placeholder="email@email.com"></div>
       </div>
-
+      <div class="sec">ENDEREÇO</div>
+      <div class="fg fg4">
+        <div class="fld"><label>CEP *</label><input type="text" id="c-cep" class="azul" placeholder="00000-000" maxlength="9" oninput="mCEP(this)" onblur="buscaCEP()"></div>
+        <div class="fld"><label>Número/Apto</label><input type="text" id="c-num" class="azul" placeholder="123"></div>
+        <div class="fld s2"><label>Logradouro</label><input type="text" id="c-lgr" class="verde" placeholder="Auto CEP"></div>
+        <div class="fld"><label>Bairro</label><input type="text" id="c-bai" class="verde" placeholder="Auto CEP"></div>
+        <div class="fld s2"><label>Cidade</label><input type="text" id="c-cid" class="verde" placeholder="Auto CEP"></div>
+        <div class="fld"><label>UF</label><input type="text" id="c-uf" class="verde" placeholder="PR" maxlength="2"></div>
+      </div>
+      <div class="sec">OBSERVAÇÕES</div>
+      <textarea id="c-obs" rows="3" placeholder="Alergias, preferências..." style="width:100%;padding:8px;border:1.5px solid #ddd;border-radius:5px;font-size:13px;background:#fffde7;margin-top:4px;resize:vertical"></textarea>
     </div>
-    <div class="modal-footer">
-      <input type="hidden" id="ag-id">
-      <button class="btn btn-cinza" onclick="fecharModal('modalAgendamento')">Cancelar</button>
-      <button class="btn btn-vermelho" onclick="salvarAgendamento()">💾 Salvar Agendamento</button>
-    </div>
-  </div>
-</div>
-<div class="modal-overlay" id="modalCliente">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="modalClienteTitulo">➕ Novo Cliente</h3>
-      <button class="modal-close" onclick="fecharModal('modalCliente')">✕</button>
-    </div>
-    <div class="modal-body">
-
-      <div class="sec-titulo">DADOS PESSOAIS</div>
-      <div class="form-grid" style="grid-template-columns:repeat(3,1fr)">
-        <div class="form-group span2">
-          <label>Nome Completo *</label>
-          <input type="text" id="c-nome" placeholder="Nome completo da cliente">
-        </div>
-        <div class="form-group">
-          <label>Data de Nascimento</label>
-          <input type="date" id="c-nasc">
-        </div>
-        <div class="form-group">
-          <label>CPF *</label>
-          <input type="text" id="c-cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
-        </div>
-        <div class="form-group">
-          <label>Telefone *</label>
-          <input type="text" id="c-tel" placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraTel(this)">
-        </div>
-        <div class="form-group">
-          <label>Profissão</label>
-          <input type="text" id="c-prof" placeholder="Ex: Professora">
-        </div>
-        <div class="form-group span3">
-          <label>E-mail</label>
-          <input type="email" id="c-email" placeholder="email@exemplo.com">
-        </div>
-      </div>
-
-      <div class="sec-titulo">ENDEREÇO</div>
-      <div class="form-grid" style="grid-template-columns:repeat(4,1fr)">
-        <div class="form-group" style="position:relative">
-          <label>CEP *</label>
-          <input type="text" id="c-cep" class="cep-field" placeholder="00000-000" maxlength="9"
-                 oninput="mascaraCEP(this)" onblur="buscarCEP()">
-        </div>
-        <div class="form-group">
-          <label>Número / Apto</label>
-          <input type="text" id="c-num" class="cep-field" placeholder="123">
-        </div>
-        <div class="form-group span2">
-          <label>Logradouro</label>
-          <input type="text" id="c-logr" class="auto" placeholder="Preenchido pelo CEP">
-        </div>
-        <div class="form-group">
-          <label>Bairro</label>
-          <input type="text" id="c-bairro" class="auto" placeholder="Preenchido pelo CEP">
-        </div>
-        <div class="form-group span2">
-          <label>Cidade</label>
-          <input type="text" id="c-cidade" class="auto" placeholder="Preenchido pelo CEP">
-        </div>
-        <div class="form-group">
-          <label>UF</label>
-          <input type="text" id="c-uf" class="auto" placeholder="PR" maxlength="2">
-        </div>
-      </div>
-
-      <div class="sec-titulo" style="margin-top:14px">OBSERVAÇÕES</div>
-      <div class="form-group" style="margin-top:8px">
-        <textarea id="c-obs" rows="3" placeholder="Alergias, preferências, histórico..." style="background:var(--amarelo-campo);border:1.5px solid var(--borda);border-radius:5px;padding:8px;font-size:13px;width:100%;resize:vertical"></textarea>
-      </div>
-
-      <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
-        <div style="width:10px;height:10px;background:var(--azul-campo);border:1px solid #90caf9;border-radius:2px"></div>
-        <span style="font-size:10px;color:#666">Digitar o CEP</span>
-        <div style="width:10px;height:10px;background:var(--verde-campo);border:1px solid #a5d6a7;border-radius:2px;margin-left:10px"></div>
-        <span style="font-size:10px;color:#666">Preenchido automaticamente</span>
-      </div>
-
-    </div>
-    <div class="modal-footer">
+    <div class="mf">
       <input type="hidden" id="c-id">
-      <button class="btn btn-cinza" onclick="fecharModal('modalCliente')">Cancelar</button>
-      <button class="btn btn-roxo" onclick="buscarCEP()">🌐 Buscar CEP</button>
-      <button class="btn btn-verde" onclick="salvarCliente()">💾 Salvar Cliente</button>
+      <button class="btn bc" onclick="fechar('ov-cli')">Cancelar</button>
+      <button class="btn bb" onclick="buscaCEP()">🌐 Buscar CEP</button>
+      <button class="btn bg" onclick="salvarCli()">💾 Salvar Cliente</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════ -->
-<!-- JAVASCRIPT                        -->
-<!-- ══════════════════════════════════ -->
-<script>
-// ── Firebase config ──
-let db = null;
-let clientes = [];
-let modoDemo = false;
+<!-- ═══════════ MODAL AGENDAMENTO ═══════════ -->
+<div class="ov" id="ov-ag">
+  <div class="modal">
+    <div class="mh" style="background:#c0392b">
+      <h3 id="tit-ag">➕ Novo Agendamento</h3>
+      <button class="mx" onclick="fechar('ov-ag')">✕</button>
+    </div>
+    <div class="mb">
+      <div class="sec">DADOS DO AGENDAMENTO</div>
+      <div class="fg fg3">
+        <div class="fld"><label>Data *</label><input type="date" id="ag-dt"></div>
+        <div class="fld"><label>Hora *</label><input type="time" id="ag-hr"></div>
+        <div class="fld"><label>Status</label>
+          <select id="ag-st" style="background:#fffde7">
+            <option>Confirmado</option><option>Aguardando</option><option>Concluído</option><option>Cancelado</option>
+          </select>
+        </div>
+        <div class="fld s3"><label>Cliente *</label>
+          <select id="ag-cl" style="background:#fffde7"><option value="">— Selecione a cliente —</option></select>
+        </div>
+        <div class="fld s2"><label>Serviço / Protocolo *</label>
+          <select id="ag-sv" style="background:#fffde7" onchange="aoSelecionarSrv()"><option value="">— Selecione o serviço —</option></select>
+        </div>
+        <div class="fld"><label>Profissional</label>
+          <select id="ag-pr" style="background:#fffde7"><option value="">— Selecione —</option></select>
+        </div>
+        <div class="fld"><label>Valor R$ <span style="color:#e67e22;font-size:9px">● editável</span></label>
+          <input type="number" id="ag-vl" placeholder="0,00" step="0.01" min="0" style="background:#fff8e8;border-color:#e67e22">
+        </div>
+        <div class="fld"><label>Vinculado a pacote?</label>
+          <select id="ag-pk" style="background:#fffde7"><option value="Não">Não</option><option value="Sim">Sim</option></select>
+        </div>
+        <div class="fld s3"><label>Observações</label>
+          <textarea id="ag-ob" rows="2" placeholder="Anotações..." style="width:100%;padding:8px;border:1.5px solid #ddd;border-radius:5px;font-size:13px;background:#fffde7;resize:vertical"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <input type="hidden" id="ag-id">
+      <button class="btn bc" onclick="fechar('ov-ag')">Cancelar</button>
+      <button class="btn br" onclick="salvarAg()">💾 Salvar Agendamento</button>
+    </div>
+  </div>
+</div>
 
-// Verifica config salva
-window.onload = () => {
-  // Conecta automaticamente com as credenciais da clínica
-  salvarConfig();
+<script>
+// ═══════════ FIREBASE ═══════════
+const fbCfg = {
+  apiKey:"AIzaSyB5JVTzRwFYtr4WZsxByJ_TbUUJsWAMsF4",
+  authDomain:"clinica-estetica-1f6ce.firebaseapp.com",
+  projectId:"clinica-estetica-1f6ce",
+  storageBucket:"clinica-estetica-1f6ce.firebasestorage.app",
+  messagingSenderId:"10106653919231",
+  appId:"1:10106653919231:web:19b1ab3d78d4ab5d96d9ca"
+};
+firebase.initializeApp(fbCfg);
+const db = firebase.firestore();
+
+// ═══════════ DADOS ═══════════
+let clientes=[], agendamentos=[], servicos=[], profissionais=[];
+
+// ═══════════ INIT ═══════════
+window.onload = async () => {
+  try {
+    await db.collection('clientes').limit(1).get();
+    document.getElementById('statusFb').textContent = '🟢 Firebase conectado';
+    toast('✅ Sistema conectado!', '#27ae60');
+  } catch(e) {
+    document.getElementById('statusFb').textContent = '🔴 Erro de conexão';
+  }
+  await carregarTudo();
 };
 
-function salvarConfig() {
-  const cfg = {
-    apiKey:            "AIzaSyB5JVTzRwFYtr4WZsxByJ_TbUUJsWAMsF4",
-    authDomain:        "clinica-estetica-1f6ce.firebaseapp.com",
-    projectId:         "clinica-estetica-1f6ce",
-    storageBucket:     "clinica-estetica-1f6ce.firebasestorage.app",
-    messagingSenderId: "10106653919231",
-    appId:             "1:10106653919231:web:19b1ab3d78d4ab5d96d9ca"
-  };
-  localStorage.setItem('fbConfig', JSON.stringify(cfg));
-  iniciarFirebase(cfg);
-}
-
-function iniciarFirebase(cfg) {
+async function carregarTudo() {
+  load(true);
   try {
-    if (!firebase.apps.length) {
-      firebase.initializeApp(cfg);
-    }
-    db = firebase.firestore();
+    const [c,a,s,p] = await Promise.all([
+      db.collection('clientes').get(),
+      db.collection('agendamentos').get(),
+      db.collection('servicos').get(),
+      db.collection('profissionais').get()
+    ]);
+    clientes      = c.docs.map(d=>({id:d.id,...d.data()}));
+    agendamentos  = a.docs.map(d=>({id:d.id,...d.data()}));
+    servicos      = s.docs.map(d=>({id:d.id,...d.data()}));
+    profissionais = p.docs.map(d=>({id:d.id,...d.data()}));
+    renderCli(); renderAg(agendamentos); renderSrv(); renderPrf();
+    atualizarMenu(); atualizarResumoAg();
+  } catch(e) { toast('Erro ao carregar: '+e.message,'#c0392b'); }
+  load(false);
+}
 
-    // Testa a conexão antes de liberar o sistema
-    db.collection('clientes').limit(1).get()
-      .then(() => {
-        document.getElementById('statusConexao').textContent = '🟢 Firebase conectado';
-        toast('✅ Firebase conectado com sucesso!', 'verde');
-        irPara('menu');
-        carregarClientes();
-      })
-      .catch(err => {
-        // Conexão ok mas regras podem bloquear — tenta mesmo assim
-        document.getElementById('statusConexao').textContent = '🟢 Firebase conectado';
-        toast('✅ Conectado!', 'verde');
-        irPara('menu');
-        carregarClientes();
-      });
-  } catch(e) {
-    toast('❌ Erro ao conectar: ' + e.message, 'vermelho');
+// ═══════════ NAVEGAÇÃO ═══════════
+function ir(pg) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+pg).classList.add('on');
+  const btn = document.querySelector(`[data-p="${pg}"]`);
+  if(btn) btn.classList.add('on');
+}
+
+// ═══════════ CLIENTES ═══════════
+function abrirCli(id) {
+  limparFrmCli();
+  if(id) {
+    const c = clientes.find(x=>x.id===id);
+    if(!c) return;
+    document.getElementById('tit-cli').textContent = '✏️ Editar Cliente';
+    document.getElementById('c-id').value  = id;
+    document.getElementById('c-nm').value  = c.nome||'';
+    document.getElementById('c-nc').value  = c.nasc||'';
+    document.getElementById('c-cpf').value = c.cpf||'';
+    document.getElementById('c-tel').value = c.tel||'';
+    document.getElementById('c-prf').value = c.prof||'';
+    document.getElementById('c-eml').value = c.email||'';
+    document.getElementById('c-cep').value = c.cep||'';
+    document.getElementById('c-num').value = c.num||'';
+    document.getElementById('c-lgr').value = c.logr||'';
+    document.getElementById('c-bai').value = c.bairro||'';
+    document.getElementById('c-cid').value = c.cidade||'';
+    document.getElementById('c-uf').value  = c.uf||'';
+    document.getElementById('c-obs').value = c.obs||'';
   }
+  abrir('ov-cli');
 }
 
-function usarDemo() {
-  modoDemo = true;
-  // Dados de demonstração
-  clientes = [
-    {id:'1', nome:'Ana Paula Ferreira',   cpf:'123.456.789-00', tel:'(44) 99811-1234', email:'ana@email.com',     cidade:'Maringá', uf:'PR', prof:'Professora'},
-    {id:'2', nome:'Beatriz Souza Lima',   cpf:'987.654.321-00', tel:'(44) 99755-5678', email:'bea@email.com',     cidade:'Londrina', uf:'PR', prof:'Empresária'},
-    {id:'3', nome:'Carla Mendonça',       cpf:'111.222.333-44', tel:'(44) 98800-9900', email:'carla@email.com',   cidade:'Cascavel', uf:'PR', prof:'Nutricionista'},
-    {id:'4', nome:'Daniela Costa Ribeiro',cpf:'444.555.666-77', tel:'(44) 99100-2233', email:'dani@email.com',    cidade:'Maringá', uf:'PR', prof:'Advogada'},
-    {id:'5', nome:'Fernanda Oliveira',    cpf:'333.222.111-00', tel:'(44) 98877-4455', email:'fer@email.com',     cidade:'Apucarana', uf:'PR', prof:'Médica'},
-  ];
-  document.getElementById('statusConexao').textContent = '🟡 Modo demonstração';
-  toast('🧪 Modo demonstração ativado — dados não são salvos', 'azul');
-  irPara('menu');
-  renderizarClientes();
-  atualizarContadores();
-}
-
-// ── NAVEGAÇÃO ──
-function irPara(pagina) {
-  document.querySelectorAll('.page').forEach(p => {
-    p.classList.remove('ativo');
-    p.style.display = 'none';
-  });
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('ativo'));
-  
-  const el = document.getElementById('page-' + pagina);
-  if (el) {
-    el.classList.add('ativo');
-    el.style.display = 'block';
-  }
-  
-  const nav = document.querySelector(`[data-page="${pagina}"]`);
-  if (nav) nav.classList.add('ativo');
-
-  // Carrega dados ao entrar na página
-  if (pagina === 'agendamentos') carregarAgendamentos();
-  if (pagina === 'clientes') carregarClientes();
-  if (pagina === 'cadastros') { carregarServicos(); carregarProfissionais(); }
-}
-
-// ── CLIENTES ──
-function carregarClientes() {
-  if (!db) return;
-  db.collection('clientes').get().then(snap => {
-    clientes = snap.docs.map(d => ({id: d.id, ...d.data()}));
-    renderizarClientes();
-    atualizarContadores();
-  }).catch(err => {
-    toast('Erro ao carregar clientes: ' + err.message, 'vermelho');
-  });
-}
-
-function renderizarClientes(lista) {
-  const dados = lista || clientes;
-  const tbody = document.getElementById('tabelaClientes');
-  if (dados.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:#999">Nenhum cliente encontrado.</td></tr>';
-    return;
-  }
-  tbody.innerHTML = dados.map((c, i) => `
-    <tr onclick="selecionarLinha(this)">
-      <td>${i+1}</td>
-      <td><b>${c.nome || ''}</b></td>
-      <td>${c.cpf || ''}</td>
-      <td>${c.tel || ''}</td>
-      <td>${c.email || ''}</td>
-      <td>${c.cidade || ''}${c.uf ? '/'+c.uf : ''}</td>
-      <td>${c.prof || ''}</td>
-      <td>
-        <div class="td-acoes">
-          <button class="btn btn-laranja btn-sm" onclick="editarCliente('${c.id}',event)">✏️</button>
-          <button class="btn btn-vermelho btn-sm" onclick="excluirCliente('${c.id}','${(c.nome||'').replace(/'/g,"\\'")}',event)">🗑️</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
-  document.getElementById('totalClientes').textContent = dados.length;
-}
-
-function filtrarClientes() {
-  const t = document.getElementById('buscaCliente').value.toLowerCase();
-  if (!t) { renderizarClientes(); return; }
-  const filtrado = clientes.filter(c =>
-    (c.nome||'').toLowerCase().includes(t) ||
-    (c.cpf||'').includes(t) ||
-    (c.tel||'').includes(t) ||
-    (c.email||'').toLowerCase().includes(t)
-  );
-  renderizarClientes(filtrado);
-}
-
-function abrirModalCliente() {
-  limparFormCliente();
-  document.getElementById('modalClienteTitulo').textContent = '➕ Novo Cliente';
-  document.getElementById('c-id').value = '';
-  abrirModal('modalCliente');
-}
-
-function editarCliente(id, ev) {
-  ev.stopPropagation();
-  const c = clientes.find(x => x.id === id);
-  if (!c) return;
-  document.getElementById('modalClienteTitulo').textContent = '✏️ Editar Cliente';
-  document.getElementById('c-id').value    = id;
-  document.getElementById('c-nome').value  = c.nome   || '';
-  document.getElementById('c-cpf').value   = c.cpf    || '';
-  document.getElementById('c-nasc').value  = c.nasc   || '';
-  document.getElementById('c-tel').value   = c.tel    || '';
-  document.getElementById('c-email').value = c.email  || '';
-  document.getElementById('c-prof').value  = c.prof   || '';
-  document.getElementById('c-cep').value   = c.cep    || '';
-  document.getElementById('c-num').value   = c.num    || '';
-  document.getElementById('c-logr').value  = c.logr   || '';
-  document.getElementById('c-bairro').value= c.bairro || '';
-  document.getElementById('c-cidade').value= c.cidade || '';
-  document.getElementById('c-uf').value    = c.uf     || '';
-  document.getElementById('c-obs').value   = c.obs    || '';
-  abrirModal('modalCliente');
-}
-
-async function salvarCliente() {
-  const nome = document.getElementById('c-nome').value.trim();
+async function salvarCli() {
+  const nome = document.getElementById('c-nm').value.trim();
   const cpf  = document.getElementById('c-cpf').value.trim();
   const tel  = document.getElementById('c-tel').value.trim();
-
-  if (!nome) { toast('Nome é obrigatório!', 'vermelho'); document.getElementById('c-nome').focus(); return; }
-  if (!cpf)  { toast('CPF é obrigatório!',  'vermelho'); document.getElementById('c-cpf').focus();  return; }
-  if (!tel)  { toast('Telefone é obrigatório!', 'vermelho'); document.getElementById('c-tel').focus(); return; }
-
-  const dados = {
-    nome,  cpf,  tel,
-    nasc:   document.getElementById('c-nasc').value,
-    email:  document.getElementById('c-email').value.trim(),
-    prof:   document.getElementById('c-prof').value.trim(),
-    cep:    document.getElementById('c-cep').value.trim(),
-    num:    document.getElementById('c-num').value.trim(),
-    logr:   document.getElementById('c-logr').value.trim(),
-    bairro: document.getElementById('c-bairro').value.trim(),
-    cidade: document.getElementById('c-cidade').value.trim(),
-    uf:     document.getElementById('c-uf').value.trim().toUpperCase(),
-    obs:    document.getElementById('c-obs').value.trim(),
-    atualizado: new Date().toISOString()
+  if(!nome){toast('Nome obrigatório!','#c0392b');return}
+  if(!cpf) {toast('CPF obrigatório!','#c0392b');return}
+  if(!tel) {toast('Telefone obrigatório!','#c0392b');return}
+  const dados={nome,cpf,tel,
+    nasc:document.getElementById('c-nc').value,
+    prof:document.getElementById('c-prf').value.trim(),
+    email:document.getElementById('c-eml').value.trim(),
+    cep:document.getElementById('c-cep').value.trim(),
+    num:document.getElementById('c-num').value.trim(),
+    logr:document.getElementById('c-lgr').value.trim(),
+    bairro:document.getElementById('c-bai').value.trim(),
+    cidade:document.getElementById('c-cid').value.trim(),
+    uf:document.getElementById('c-uf').value.trim().toUpperCase(),
+    obs:document.getElementById('c-obs').value.trim()
   };
-
   const id = document.getElementById('c-id').value;
-
-  // Modo demonstração
-  if (modoDemo || !db) {
-    if (id) {
-      const idx = clientes.findIndex(x => x.id === id);
-      if (idx >= 0) clientes[idx] = {id, ...dados};
-    } else {
-      clientes.push({id: Date.now().toString(), ...dados});
-    }
-    renderizarClientes();
-    atualizarContadores();
-    fecharModal('modalCliente');
-    toast(id ? '✅ Cliente atualizado!' : '✅ Cliente cadastrado!', 'verde');
-    return;
-  }
-
-  mostrarLoading(true);
+  load(true);
   try {
-    if (id) {
+    if(id) {
       await db.collection('clientes').doc(id).update(dados);
-      toast('✅ Cliente atualizado!', 'verde');
+      const i=clientes.findIndex(x=>x.id===id);
+      if(i>=0) clientes[i]={id,...dados};
+      toast('✅ Cliente atualizado!','#27ae60');
     } else {
-      // Verifica CPF duplicado
-      const dup = await db.collection('clientes').where('cpf','==',cpf).get();
-      if (!dup.empty) { toast('CPF já cadastrado!', 'vermelho'); mostrarLoading(false); return; }
-      dados.criado = new Date().toISOString();
-      await db.collection('clientes').add(dados);
-      toast('✅ Cliente cadastrado com sucesso!', 'verde');
+      const dup=await db.collection('clientes').where('cpf','==',cpf).get();
+      if(!dup.empty){toast('CPF já cadastrado!','#c0392b');load(false);return}
+      const ref=await db.collection('clientes').add({...dados,criado:new Date().toISOString()});
+      clientes.push({id:ref.id,...dados});
+      toast('✅ Cliente cadastrado!','#27ae60');
     }
-    fecharModal('modalCliente');
-  } catch(e) {
-    toast('Erro ao salvar: ' + e.message, 'vermelho');
-  }
-  mostrarLoading(false);
+    fechar('ov-cli'); renderCli(); atualizarMenu();
+  } catch(e){toast('Erro: '+e.message,'#c0392b')}
+  load(false);
 }
 
-async function excluirCliente(id, nome, ev) {
+async function excluirCli(id,ev) {
   ev.stopPropagation();
-  if (!confirm(`Deseja excluir a cliente:\n\n${nome}?`)) return;
-
-  if (modoDemo) {
-    clientes = clientes.filter(x => x.id !== id);
-    renderizarClientes();
-    atualizarContadores();
-    toast('🗑️ Cliente excluída.', 'azul');
-    return;
-  }
-
-  mostrarLoading(true);
+  const c=clientes.find(x=>x.id===id);
+  if(!confirm('Excluir: '+c?.nome+'?')) return;
+  load(true);
   try {
     await db.collection('clientes').doc(id).delete();
-    toast('🗑️ Cliente excluída.', 'azul');
-  } catch(e) {
-    toast('Erro: ' + e.message, 'vermelho');
-  }
-  mostrarLoading(false);
+    clientes=clientes.filter(x=>x.id!==id);
+    renderCli(); atualizarMenu();
+    toast('🗑️ Excluído.','#2980b9');
+  } catch(e){toast('Erro: '+e.message,'#c0392b')}
+  load(false);
 }
 
-function limparFormCliente() {
-  ['c-id','c-nome','c-cpf','c-nasc','c-tel','c-email','c-prof',
-   'c-cep','c-num','c-logr','c-bairro','c-cidade','c-uf','c-obs']
-  .forEach(id => document.getElementById(id).value = '');
+function filtrarCli() {
+  const t=document.getElementById('busca-cli').value.toLowerCase();
+  if(!t){renderCli();return}
+  renderCli(clientes.filter(c=>
+    (c.nome||'').toLowerCase().includes(t)||(c.cpf||'').includes(t)||(c.tel||'').includes(t)
+  ));
 }
 
-// ── AGENDAMENTOS ──
-let agendamentos = [];
+function renderCli(lista) {
+  const d=lista||clientes;
+  document.getElementById('tot-cli').textContent=d.length;
+  const tb=document.getElementById('tb-cli');
+  if(!d.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:20px;color:#999">Nenhum cliente.</td></tr>';return}
+  tb.innerHTML=d.map((c,i)=>`<tr>
+    <td>${i+1}</td><td><b>${c.nome||''}</b></td><td>${c.cpf||''}</td><td>${c.tel||''}</td>
+    <td>${c.email||''}</td><td>${c.cidade||''}${c.uf?'/'+c.uf:''}</td><td>${c.prof||''}</td>
+    <td><div class="acts">
+      <button class="btn bo bsm" onclick="abrirCli('${c.id}')">✏️</button>
+      <button class="btn br bsm" onclick="excluirCli('${c.id}',event)">🗑️</button>
+    </div></td>
+  </tr>`).join('');
+}
 
-function carregarAgendamentos() {
-  if (!db) return;
-  db.collection('agendamentos').get().then(snap => {
-    agendamentos = snap.docs.map(d => ({id: d.id, ...d.data()}));
-    agendamentos.sort((a,b) => (a.data+a.hora).localeCompare(b.data+b.hora));
-    renderizarAgendamentos(agendamentos);
-    atualizarResumoAgenda();
-    document.getElementById('totalAgendamentos').textContent = agendamentos.length;
-  }).catch(err => {
-    toast('Erro ao carregar agendamentos: ' + err.message, 'vermelho');
+// ═══════════ AGENDAMENTOS ═══════════
+function abrirAg(id) {
+  limparFrmAg();
+  // Preenche selects
+  const sc=document.getElementById('ag-cl');
+  sc.innerHTML='<option value="">— Selecione a cliente —</option>';
+  clientes.sort((a,b)=>a.nome.localeCompare(b.nome)).forEach(c=>{
+    const o=document.createElement('option');
+    o.value=c.nome; o.textContent=c.nome; sc.appendChild(o);
   });
-}
-
-function abrirModalAgendamento() {
-  document.getElementById('modalAgendaTitulo').textContent = '➕ Novo Agendamento';
-  document.getElementById('ag-id').value    = '';
-  document.getElementById('ag-data').value  = new Date().toISOString().split('T')[0];
-  document.getElementById('ag-hora').value  = '09:00';
-  document.getElementById('ag-status').value = 'Confirmado';
-  document.getElementById('ag-cliente').value = '';
-  document.getElementById('ag-valor').value  = '';
-  document.getElementById('ag-pacote').value = 'Não';
-  document.getElementById('ag-obs').value    = '';
-
-  // Garante que ag-servico é sempre um select ao abrir
-  let selSrv = document.getElementById('ag-servico');
-  if (!selSrv || selSrv.tagName !== 'SELECT') {
-    const novoSel = document.createElement('select');
-    novoSel.id = 'ag-servico';
-    novoSel.style.cssText = 'background:#fffde7;padding:7px 10px;border:1.5px solid #ddd;border-radius:5px;font-size:13px;width:100%';
-    if (selSrv) selSrv.parentNode.replaceChild(novoSel, selSrv);
-  }
-
-  preencherSelectClientes('ag-cliente');
-  preencherSelectServicos();
-  preencherSelectProfissionais();
-
-  // Evento valor automático ao selecionar serviço
-  const sel = document.getElementById('ag-servico');
-  if (sel) sel.onchange = aoSelecionarServico;
-
-  abrirModal('modalAgendamento');
-}
-
-function preencherSelectClientes(selectId) {
-  const sel = document.getElementById(selectId);
-  const val = sel.value;
-  sel.innerHTML = '<option value="">— Selecione a cliente —</option>';
-  clientes.sort((a,b) => a.nome.localeCompare(b.nome)).forEach(c => {
-    const op = document.createElement('option');
-    op.value = c.nome;
-    op.textContent = c.nome;
-    sel.appendChild(op);
+  const ss=document.getElementById('ag-sv');
+  ss.innerHTML='<option value="">— Selecione o serviço —</option>';
+  servicos.forEach(s=>{
+    const o=document.createElement('option');
+    o.value=s.nome; o.dataset.valor=s.valor||0;
+    o.textContent=s.nome+(s.valor?' — R$ '+parseFloat(s.valor).toFixed(2).replace('.',','):'');
+    ss.appendChild(o);
   });
-  sel.value = val;
+  const sp=document.getElementById('ag-pr');
+  sp.innerHTML='<option value="">— Selecione —</option>';
+  profissionais.filter(p=>p.status==='Ativo').forEach(p=>{
+    const o=document.createElement('option');
+    o.value=p.nome; o.textContent=p.nome; sp.appendChild(o);
+  });
+  if(id) {
+    const a=agendamentos.find(x=>x.id===id);
+    if(!a) return;
+    document.getElementById('tit-ag').textContent='✏️ Editar Agendamento';
+    document.getElementById('ag-id').value=id;
+    document.getElementById('ag-dt').value=a.data||'';
+    document.getElementById('ag-hr').value=a.hora||'';
+    document.getElementById('ag-st').value=a.status||'Confirmado';
+    document.getElementById('ag-cl').value=a.cliente||'';
+    document.getElementById('ag-sv').value=a.servico||'';
+    document.getElementById('ag-pr').value=a.prof||'';
+    document.getElementById('ag-vl').value=a.valor||'';
+    document.getElementById('ag-pk').value=a.pacote||'Não';
+    document.getElementById('ag-ob').value=a.obs||'';
+  }
+  abrir('ov-ag');
 }
 
-async function salvarAgendamento() {
-  const data    = document.getElementById('ag-data').value;
-  const hora    = document.getElementById('ag-hora').value;
-  const cliente = document.getElementById('ag-cliente').value;
-  // Pega valor do serviço seja select ou input
-  const servicoEl = document.getElementById('ag-servico');
-  const servico = servicoEl ? servicoEl.value.trim() : '';
-  const profEl  = document.getElementById('ag-prof');
-  const prof    = profEl ? profEl.value.trim() : '';
+function aoSelecionarSrv() {
+  const sel=document.getElementById('ag-sv');
+  const op=sel.options[sel.selectedIndex];
+  if(op && op.dataset.valor) document.getElementById('ag-vl').value=op.dataset.valor;
+}
 
-  if (!data)    { toast('Data é obrigatória!',     'vermelho'); return; }
-  if (!hora)    { toast('Hora é obrigatória!',     'vermelho'); return; }
-  if (!cliente) { toast('Selecione uma cliente!',  'vermelho'); return; }
-  if (!servico) { toast('Serviço é obrigatório!',  'vermelho'); return; }
-
-  const dados = {
-    data, hora, cliente, servico,
-    prof,
-    valor:   parseFloat(document.getElementById('ag-valor').value) || 0,
-    pacote:  document.getElementById('ag-pacote').value,
-    status:  document.getElementById('ag-status').value,
-    obs:     document.getElementById('ag-obs').value.trim(),
-    atualizado: new Date().toISOString()
+async function salvarAg() {
+  const data=document.getElementById('ag-dt').value;
+  const hora=document.getElementById('ag-hr').value;
+  const cli =document.getElementById('ag-cl').value;
+  const srv =document.getElementById('ag-sv').value;
+  if(!data){toast('Data obrigatória!','#c0392b');return}
+  if(!hora){toast('Hora obrigatória!','#c0392b');return}
+  if(!cli) {toast('Selecione uma cliente!','#c0392b');return}
+  if(!srv) {toast('Selecione um serviço!','#c0392b');return}
+  const dados={
+    data,hora,cliente:cli,servico:srv,
+    prof:document.getElementById('ag-pr').value,
+    valor:parseFloat(document.getElementById('ag-vl').value)||0,
+    pacote:document.getElementById('ag-pk').value,
+    status:document.getElementById('ag-st').value,
+    obs:document.getElementById('ag-ob').value.trim()
   };
-
-  const id = document.getElementById('ag-id').value;
-
-  if (modoDemo || !db) {
-    if (id) {
-      const idx = agendamentos.findIndex(x => x.id === id);
-      if (idx >= 0) agendamentos[idx] = {id, ...dados};
-    } else {
-      agendamentos.push({id: Date.now().toString(), ...dados});
-    }
-    renderizarAgendamentos(agendamentos);
-    atualizarResumoAgenda();
-    fecharModal('modalAgendamento');
-    toast(id ? '✅ Agendamento atualizado!' : '✅ Agendamento salvo!', 'verde');
-    return;
-  }
-
-  mostrarLoading(true);
+  const id=document.getElementById('ag-id').value;
+  load(true);
   try {
-    if (id) {
+    if(id) {
       await db.collection('agendamentos').doc(id).update(dados);
-      toast('✅ Agendamento atualizado!', 'verde');
+      const i=agendamentos.findIndex(x=>x.id===id);
+      if(i>=0) agendamentos[i]={id,...dados};
+      toast('✅ Agendamento atualizado!','#27ae60');
     } else {
-      dados.criado = new Date().toISOString();
-      await db.collection('agendamentos').add(dados);
-      toast('✅ Agendamento salvo!', 'verde');
+      const ref=await db.collection('agendamentos').add({...dados,criado:new Date().toISOString()});
+      agendamentos.push({id:ref.id,...dados});
+      toast('✅ Agendamento salvo!','#27ae60');
     }
-    fecharModal('modalAgendamento');
-    // Recarrega a lista após salvar
-    await carregarAgendamentos();
-  } catch(e) {
-    toast('Erro: ' + e.message, 'vermelho');
-  }
-  mostrarLoading(false);
+    fechar('ov-ag');
+    agendamentos.sort((a,b)=>(a.data+a.hora).localeCompare(b.data+b.hora));
+    renderAg(agendamentos); atualizarResumoAg(); atualizarMenu();
+  } catch(e){toast('Erro: '+e.message,'#c0392b')}
+  load(false);
 }
 
-function editarAgendamento(id, ev) {
+async function excluirAg(id,nome,ev) {
   ev.stopPropagation();
-  const a = agendamentos.find(x => x.id === id);
-  if (!a) return;
-  document.getElementById('modalAgendaTitulo').textContent = '✏️ Editar Agendamento';
-  document.getElementById('ag-id').value      = id;
-  document.getElementById('ag-data').value    = a.data    || '';
-  document.getElementById('ag-hora').value    = a.hora    || '';
-  document.getElementById('ag-status').value  = a.status  || 'Confirmado';
-  document.getElementById('ag-servico').value = a.servico || '';
-  document.getElementById('ag-prof').value    = a.prof    || '';
-  document.getElementById('ag-valor').value   = a.valor   || '';
-  document.getElementById('ag-pacote').value  = a.pacote  || 'Não';
-  document.getElementById('ag-obs').value     = a.obs     || '';
-  preencherSelectClientes('ag-cliente');
-  document.getElementById('ag-cliente').value = a.cliente || '';
-  abrirModal('modalAgendamento');
-}
-
-async function excluirAgendamento(id, nome, ev) {
-  ev.stopPropagation();
-  if (!confirm(`Excluir agendamento de ${nome}?`)) return;
-  if (modoDemo || !db) {
-    agendamentos = agendamentos.filter(x => x.id !== id);
-    filtrarAgendamentos();
-    atualizarResumoAgenda();
-    toast('🗑️ Agendamento excluído.', 'azul');
-    return;
-  }
-  mostrarLoading(true);
+  if(!confirm('Excluir agendamento de '+nome+'?')) return;
+  load(true);
   try {
     await db.collection('agendamentos').doc(id).delete();
-    toast('🗑️ Agendamento excluído.', 'azul');
-  } catch(e) { toast('Erro: ' + e.message, 'vermelho'); }
-  mostrarLoading(false);
+    agendamentos=agendamentos.filter(x=>x.id!==id);
+    renderAg(agendamentos); atualizarResumoAg();
+    toast('🗑️ Excluído.','#2980b9');
+  } catch(e){toast('Erro: '+e.message,'#c0392b')}
+  load(false);
 }
 
-async function mudarStatus(id, novoStatus) {
-  if (modoDemo || !db) {
-    const a = agendamentos.find(x => x.id === id);
-    if (a) { a.status = novoStatus; filtrarAgendamentos(); atualizarResumoAgenda(); }
-    toast('✅ Status atualizado!', 'verde'); return;
-  }
+async function mudaStatus(id,st) {
   try {
-    await db.collection('agendamentos').doc(id).update({status: novoStatus});
-    toast('✅ Status: ' + novoStatus, 'verde');
-  } catch(e) { toast('Erro: ' + e.message, 'vermelho'); }
+    await db.collection('agendamentos').doc(id).update({status:st});
+    const a=agendamentos.find(x=>x.id===id);
+    if(a) a.status=st;
+    atualizarResumoAg();
+    toast('✅ Status: '+st,'#27ae60');
+  } catch(e){toast('Erro: '+e.message,'#c0392b')}
 }
 
-function filtrarAgendamentos() {
-  const busca  = (document.getElementById('buscaAgendamento')?.value || '').toLowerCase().trim();
-  const ini    = document.getElementById('filtro-ag-ini')?.value || '';
-  const fim    = document.getElementById('filtro-ag-fim')?.value || '';
-  const status = document.getElementById('filtro-ag-status')?.value || '';
-  const prof   = (document.getElementById('filtro-ag-prof')?.value || '').toLowerCase().trim();
-
-  let lista = [...agendamentos];
-
-  if (ini)    lista = lista.filter(a => a.data && a.data >= ini);
-  if (fim)    lista = lista.filter(a => a.data && a.data <= fim);
-  if (status) lista = lista.filter(a => a.status === status);
-  if (prof)   lista = lista.filter(a => (a.prof||'').toLowerCase().includes(prof));
-  if (busca)  lista = lista.filter(a =>
-    (a.cliente||'').toLowerCase().includes(busca) ||
-    (a.servico||'').toLowerCase().includes(busca) ||
-    (a.prof||'').toLowerCase().includes(busca)
-  );
-
-  renderizarAgendamentos(lista);
-  document.getElementById('totalAgendamentos').textContent = lista.length;
+function filtrarAg() {
+  const b=(document.getElementById('busca-ag').value||'').toLowerCase();
+  const ini=document.getElementById('fi-ini').value||'';
+  const fim=document.getElementById('fi-fim').value||'';
+  const st=document.getElementById('fi-st').value||'';
+  const pr=(document.getElementById('fi-pr').value||'').toLowerCase();
+  let l=[...agendamentos];
+  if(ini) l=l.filter(a=>a.data>=ini);
+  if(fim) l=l.filter(a=>a.data<=fim);
+  if(st)  l=l.filter(a=>a.status===st);
+  if(pr)  l=l.filter(a=>(a.prof||'').toLowerCase().includes(pr));
+  if(b)   l=l.filter(a=>(a.cliente||'').toLowerCase().includes(b)||(a.servico||'').toLowerCase().includes(b));
+  renderAg(l);
 }
 
-function renderizarAgendamentos(lista) {
-  const tbody = document.getElementById('tabelaAgendamentos');
-  if (!lista || lista.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:#999">Nenhum agendamento encontrado.</td></tr>';
-    return;
-  }
-
-  const cores = {
-    'Confirmado': 'badge-ok',
-    'Aguardando': 'badge-warn',
-    'Concluído':  'badge-ok',
-    'Cancelado':  'badge-err'
-  };
-
-  tbody.innerHTML = lista.map(a => {
-    const dataFmt = a.data ? a.data.split('-').reverse().join('/') : '';
-    const valorFmt = a.valor ? 'R$ ' + parseFloat(a.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—';
-    return `
-    <tr onclick="selecionarLinha(this)">
-      <td><b>${dataFmt}</b></td>
-      <td>${a.hora || ''}</td>
-      <td>${a.cliente || ''}</td>
-      <td>${a.servico || ''}</td>
-      <td>${a.prof || '—'}</td>
-      <td style="color:#27ae60;font-weight:600">${valorFmt}</td>
-      <td>${a.pacote === 'Sim' ? '<span class="badge-ok">Sim</span>' : '—'}</td>
-      <td>
-        <select onchange="mudarStatus('${a.id}',this.value)" style="font-size:11px;padding:2px 4px;border-radius:4px;border:1px solid #ddd;background:#fff" onclick="event.stopPropagation()">
-          ${['Confirmado','Aguardando','Concluído','Cancelado'].map(s =>
-            `<option ${a.status===s?'selected':''}>${s}</option>`
-          ).join('')}
-        </select>
-      </td>
-      <td>
-        <div class="td-acoes">
-          <button class="btn btn-laranja btn-sm" onclick="editarAgendamento('${a.id}',event)">✏️</button>
-          <button class="btn btn-vermelho btn-sm" onclick="excluirAgendamento('${a.id}','${(a.cliente||'').replace(/'/g,"\\'")}',event)">🗑️</button>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
+function renderAg(lista) {
+  const tb=document.getElementById('tb-ag');
+  document.getElementById('tot-ag').textContent=lista.length;
+  if(!lista.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:20px;color:#999">Nenhum agendamento.</td></tr>';return}
+  tb.innerHTML=lista.map(a=>`<tr>
+    <td><b>${(a.data||'').split('-').reverse().join('/')}</b></td>
+    <td>${a.hora||''}</td><td>${a.cliente||''}</td><td>${a.servico||''}</td>
+    <td>${a.prof||'—'}</td>
+    <td style="color:#27ae60;font-weight:600">${a.valor?'R$ '+parseFloat(a.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</td>
+    <td>${a.pacote==='Sim'?'<span class="bok">Sim</span>':'—'}</td>
+    <td><select onchange="mudaStatus('${a.id}',this.value)" style="font-size:11px;padding:3px;border-radius:4px;border:1px solid #ddd" onclick="event.stopPropagation()">
+      ${['Confirmado','Aguardando','Concluído','Cancelado'].map(s=>`<option ${a.status===s?'selected':''}>${s}</option>`).join('')}
+    </select></td>
+    <td><div class="acts">
+      <button class="btn bo bsm" onclick="abrirAg('${a.id}')">✏️</button>
+      <button class="btn br bsm" onclick="excluirAg('${a.id}','${(a.cliente||'').replace(/'/g,"\\'")}',event)">🗑️</button>
+    </div></td>
+  </tr>`).join('');
 }
 
-function atualizarResumoAgenda() {
-  const hoje = new Date().toISOString().split('T')[0];
-  const deHoje = agendamentos.filter(a => a.data === hoje);
-  document.getElementById('ag-total-dia').textContent    = deHoje.length;
-  document.getElementById('ag-confirmados').textContent  = deHoje.filter(a => a.status === 'Confirmado').length;
-  document.getElementById('ag-aguardando').textContent   = deHoje.filter(a => a.status === 'Aguardando').length;
-  const fat = deHoje.filter(a => a.status !== 'Cancelado').reduce((s,a) => s + (parseFloat(a.valor)||0), 0);
-  document.getElementById('ag-faturamento').textContent  = 'R$ ' + fat.toLocaleString('pt-BR',{minimumFractionDigits:2});
+function atualizarResumoAg() {
+  const hj=new Date().toISOString().split('T')[0];
+  const d=agendamentos.filter(a=>a.data===hj);
+  document.getElementById('ag-hj').textContent=d.length;
+  document.getElementById('ag-cf').textContent=d.filter(a=>a.status==='Confirmado').length;
+  document.getElementById('ag-aw').textContent=d.filter(a=>a.status==='Aguardando').length;
+  const ft=d.filter(a=>a.status!=='Cancelado').reduce((s,a)=>s+(parseFloat(a.valor)||0),0);
+  document.getElementById('ag-ft').textContent='R$ '+ft.toLocaleString('pt-BR',{minimumFractionDigits:2});
 }
 
-function irParaHoje() {
-  const hoje = new Date().toISOString().split('T')[0];
-  document.getElementById('filtro-ag-ini').value = hoje;
-  document.getElementById('filtro-ag-fim').value = hoje;
-  filtrarAgendamentos();
+function hojeAg(){
+  const hj=new Date().toISOString().split('T')[0];
+  document.getElementById('fi-ini').value=hj;
+  document.getElementById('fi-fim').value=hj;
+  filtrarAg();
+}
+function limparFiltAg(){
+  ['fi-ini','fi-fim','fi-st','fi-pr','busca-ag'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  renderAg(agendamentos);
 }
 
-function limparFiltrosAgenda() {
-  document.getElementById('filtro-ag-ini').value = '';
-  document.getElementById('filtro-ag-fim').value = '';
-  document.getElementById('filtro-ag-status').value = '';
-  document.getElementById('filtro-ag-prof').value = '';
-  document.getElementById('buscaAgendamento').value = '';
-  filtrarAgendamentos();
-}
-async function buscarCEP() {
-  let cep = document.getElementById('c-cep').value.replace(/\D/g,'');
-  if (cep.length !== 8) return;
+// ═══════════ SERVIÇOS ═══════════
+async function salvarSrv() {
+  const nome=document.getElementById('srv-nm').value.trim();
+  if(!nome){toast('Nome obrigatório!','#c0392b');return}
+  const dados={nome,duracao:parseInt(document.getElementById('srv-dur').value)||0,valor:parseFloat(document.getElementById('srv-vl').value)||0,desc:document.getElementById('srv-ds').value.trim()};
+  const id=document.getElementById('srv-id').value;
+  load(true);
   try {
-    const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-    const d = await r.json();
-    if (d.erro) { toast('CEP não encontrado.', 'vermelho'); return; }
-    document.getElementById('c-logr').value   = d.logradouro || '';
-    document.getElementById('c-bairro').value = d.bairro     || '';
-    document.getElementById('c-cidade').value = d.localidade || '';
-    document.getElementById('c-uf').value     = d.uf         || '';
+    if(id){
+      await db.collection('servicos').doc(id).update(dados);
+      const i=servicos.findIndex(x=>x.id===id); if(i>=0) servicos[i]={id,...dados};
+      toast('✅ Serviço atualizado!','#27ae60');
+    } else {
+      const ref=await db.collection('servicos').add(dados);
+      servicos.push({id:ref.id,...dados});
+      toast('✅ Serviço cadastrado!','#27ae60');
+    }
+    limparSrv(); renderSrv();
+  } catch(e){toast('Erro: '+e.message,'#c0392b')}
+  load(false);
+}
+
+async function excluirSrv(id,ev) {
+  ev.stopPropagation();
+  if(!confirm('Excluir este serviço?')) return;
+  load(true);
+  try {
+    await db.collection('servicos').doc(id).delete();
+    servicos=servicos.filter(x=>x.id!==id); renderSrv();
+    toast('🗑️ Excluído.','#2980b9');
+  } catch(e){toast('Erro: '+e.message,'#c0392b')}
+  load(false);
+}
+
+function editarSrv(id){
+  const s=servicos.find(x=>x.id===id); if(!s) return;
+  document.getElementById('srv-id').value=id;
+  document.getElementById('srv-nm').value=s.nome||'';
+  document.getElementById('srv-dur').value=s.duracao||'';
+  document.getElementById('srv-vl').value=s.valor||'';
+  document.getElementById('srv-ds').value=s.desc||'';
+}
+
+function renderSrv(){
+  document.getElementById('tot-srv').textContent=servicos.length;
+  const tb=document.getElementById('tb-srv');
+  if(!servicos.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:14px;color:#999">Nenhum serviço.</td></tr>';return}
+  tb.innerHTML=servicos.map(s=>`<tr>
+    <td><b>${s.nome||''}</b>${s.desc?'<br><small style="color:#999">'+s.desc+'</small>':''}</td>
+    <td>${s.duracao?s.duracao+'min':'—'}</td>
+    <td style="color:#27ae60;font-weight:600">${s.valor?'R$ '+parseFloat(s.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</td>
+    <td><div class="acts">
+      <button class="btn bo bsm" onclick="editarSrv('${s.id}')">✏️</button>
+      <button class="btn br bsm" onclick="excluirSrv('${s.id}',event)">🗑️</button>
+    </div></td>
+  </tr>`).join('');
+}
+function limparSrv(){['srv-id','srv-nm','srv-dur','srv-vl','srv-ds'].forEach(id=>document.getElementById(id).value='');}
+
+// ═══════════ PROFISSIONAIS ═══════════
+async function salvarPrf() {
+  const nome=document.getElementById('prf-nm').value.trim();
+  if(!nome){toast('Nome obrigatório!','#c0392b');return}
+  const dados={nome,espec:document.getElementById('prf-ep').value.trim(),tel:document.getElementById('prf-tl').value.trim(),email:document.getElementById('prf-em').value.trim(),status:document.getElementById('prf-st').value};
+  const id=document.getElementById('prf-id').value;
+  load(true);
+  try {
+    if(id){
+      await db.collection('profissionais').doc(id).update(dados);
+      const i=profissionais.findIndex(x=>x.id===id); if(i>=0) profissionais[i]={id,...dados};
+      toast('✅ Profissional atualizado!','#27ae60');
+    } else {
+      const ref=await db.collection('profissionais').add(dados);
+      profissionais.push({id:ref.id,...dados});
+      toast('✅ Profissional cadastrado!','#27ae60');
+    }
+    limparPrf(); renderPrf();
+  } catch(e){toast('Erro: '+e.message,'#c0392b')}
+  load(false);
+}
+
+async function excluirPrf(id,ev) {
+  ev.stopPropagation();
+  if(!confirm('Excluir este profissional?')) return;
+  load(true);
+  try {
+    await db.collection('profissionais').doc(id).delete();
+    profissionais=profissionais.filter(x=>x.id!==id); renderPrf();
+    toast('🗑️ Excluído.','#2980b9');
+  } catch(e){toast('Erro: '+e.message,'#c0392b')}
+  load(false);
+}
+
+function editarPrf(id){
+  const p=profissionais.find(x=>x.id===id); if(!p) return;
+  document.getElementById('prf-id').value=id;
+  document.getElementById('prf-nm').value=p.nome||'';
+  document.getElementById('prf-ep').value=p.espec||'';
+  document.getElementById('prf-tl').value=p.tel||'';
+  document.getElementById('prf-em').value=p.email||'';
+  document.getElementById('prf-st').value=p.status||'Ativo';
+}
+
+function renderPrf(){
+  document.getElementById('tot-prf').textContent=profissionais.length;
+  const tb=document.getElementById('tb-prf');
+  if(!profissionais.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:14px;color:#999">Nenhum profissional.</td></tr>';return}
+  tb.innerHTML=profissionais.map(p=>`<tr>
+    <td><b>${p.nome||''}</b></td><td>${p.espec||'—'}</td>
+    <td><span class="${p.status==='Ativo'?'bok':'ber'}">${p.status||'Ativo'}</span></td>
+    <td><div class="acts">
+      <button class="btn bo bsm" onclick="editarPrf('${p.id}')">✏️</button>
+      <button class="btn br bsm" onclick="excluirPrf('${p.id}',event)">🗑️</button>
+    </div></td>
+  </tr>`).join('');
+}
+function limparPrf(){['prf-id','prf-nm','prf-ep','prf-tl','prf-em'].forEach(id=>document.getElementById(id).value='');document.getElementById('prf-st').value='Ativo';}
+
+// ═══════════ MENU CONTADORES ═══════════
+function atualizarMenu(){
+  document.getElementById('sub-cli').textContent=clientes.length+' cadastradas';
+  document.getElementById('sub-ag').textContent=agendamentos.length+' registros';
+}
+
+// ═══════════ CEP ═══════════
+async function buscaCEP(){
+  const cep=document.getElementById('c-cep').value.replace(/\D/g,'');
+  if(cep.length!==8) return;
+  try {
+    const r=await fetch('https://viacep.com.br/ws/'+cep+'/json/');
+    const d=await r.json();
+    if(d.erro){toast('CEP não encontrado.','#c0392b');return}
+    document.getElementById('c-lgr').value=d.logradouro||'';
+    document.getElementById('c-bai').value=d.bairro||'';
+    document.getElementById('c-cid').value=d.localidade||'';
+    document.getElementById('c-uf').value=d.uf||'';
     document.getElementById('c-num').focus();
-    toast('✅ Endereço preenchido!', 'verde');
-  } catch(e) {
-    toast('Sem conexão para buscar CEP.', 'vermelho');
-  }
+    toast('✅ Endereço preenchido!','#27ae60');
+  } catch(e){toast('Sem conexão para CEP.','#c0392b')}
 }
 
-// ── CONTADORES ──
-function atualizarContadores() {
-  document.getElementById('sub-clientes').textContent = clientes.length + ' cadastradas';
-  document.getElementById('totalClientes').textContent = clientes.length;
+// ═══════════ FORM LIMPAR ═══════════
+function limparFrmCli(){
+  document.getElementById('tit-cli').textContent='➕ Novo Cliente';
+  ['c-id','c-nm','c-nc','c-cpf','c-tel','c-prf','c-eml','c-cep','c-num','c-lgr','c-bai','c-cid','c-uf','c-obs'].forEach(id=>document.getElementById(id).value='');
+}
+function limparFrmAg(){
+  document.getElementById('tit-ag').textContent='➕ Novo Agendamento';
+  document.getElementById('ag-id').value='';
+  document.getElementById('ag-dt').value=new Date().toISOString().split('T')[0];
+  document.getElementById('ag-hr').value='09:00';
+  document.getElementById('ag-st').value='Confirmado';
+  document.getElementById('ag-vl').value='';
+  document.getElementById('ag-pk').value='Não';
+  document.getElementById('ag-ob').value='';
 }
 
-// ── HELPERS ──
-function abrirModal(id)  { document.getElementById(id).classList.add('aberto'); }
-function fecharModal(id) { document.getElementById(id).classList.remove('aberto'); }
-function selecionarLinha(tr) {
-  document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('selecionado'));
-  tr.classList.add('selecionado');
-}
-function mostrarLoading(show) {
-  document.getElementById('loading').classList.toggle('show', show);
-}
+// ═══════════ MÁSCARAS ═══════════
+function mCPF(el){let v=el.value.replace(/\D/g,'').substring(0,11);v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');el.value=v;}
+function mTel(el){let v=el.value.replace(/\D/g,'').substring(0,11);if(v.length<=10)v=v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');else v=v.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');el.value=v;}
+function mCEP(el){let v=el.value.replace(/\D/g,'').substring(0,8);if(v.length>5)v=v.replace(/(\d{5})(\d)/,'$1-$2');el.value=v;}
 
-let toastTimer;
-function toast(msg, tipo = 'verde') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = `toast ${tipo} show`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
-}
+// ═══════════ MODAL ═══════════
+function abrir(id){document.getElementById(id).classList.add('on');}
+function fechar(id){document.getElementById(id).classList.remove('on');}
+document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on');}));
 
-// ── MÁSCARAS ──
-function mascaraCPF(el) {
-  let v = el.value.replace(/\D/g,'').substring(0,11);
-  v = v.replace(/(\d{3})(\d)/,'$1.$2')
-       .replace(/(\d{3})(\d)/,'$1.$2')
-       .replace(/(\d{3})(\d{1,2})$/,'$1-$2');
-  el.value = v;
+// ═══════════ HELPERS ═══════════
+function load(s){document.getElementById('loading').classList.toggle('on',s);}
+let tTimer;
+function toast(msg,cor='#27ae60'){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.style.background=cor;
+  el.classList.add('on');
+  clearTimeout(tTimer);
+  tTimer=setTimeout(()=>el.classList.remove('on'),3500);
 }
-function mascaraTel(el) {
-  let v = el.value.replace(/\D/g,'').substring(0,11);
-  if (v.length <= 10)
-    v = v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
-  else
-    v = v.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');
-  el.value = v;
-}
-function mascaraCEP(el) {
-  let v = el.value.replace(/\D/g,'').substring(0,8);
-  if (v.length > 5) v = v.replace(/(\d{5})(\d)/,'$1-$2');
-  el.value = v;
-}
-
-// Fechar modal clicando fora
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('aberto'); });
-});
 </script>
 </body>
 </html>
